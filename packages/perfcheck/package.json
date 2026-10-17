@@ -1,0 +1,67 @@
+{
+  "name": "@devchecks/perfcheck",
+  "version": "0.1.0",
+  "description": "Performance budgets: Core Web Vitals and resource weight in the browser, bundle size budgets (gzip/brotli) and Playwright lab runs in CI.",
+  "keywords": [
+    "performance",
+    "web-vitals",
+    "lcp",
+    "cls",
+    "inp",
+    "bundle-size",
+    "budget"
+  ],
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "unpkg": "./dist/perfcheck.min.js",
+  "jsdelivr": "./dist/perfcheck.min.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/types/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./cdn": "./dist/perfcheck.min.js",
+    "./cdn/esm": "./dist/perfcheck.esm.js",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "perfcheck": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build.mjs"
+  },
+  "devchecks": {
+    "global": "PerfCheck",
+    "cdn": "perfcheck",
+    "node": [
+      "src/node.ts",
+      "src/cli.ts"
+    ]
+  },
+  "dependencies": {
+    "@devchecks/core": "^0.1.0"
+  },
+  "peerDependencies": {
+    "playwright": ">=1.40.0"
+  },
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": true
+    }
+  }
+}

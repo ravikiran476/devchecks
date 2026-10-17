@@ -1,0 +1,58 @@
+{
+  "name": "@devchecks/archcheck",
+  "version": "0.1.0",
+  "description": "Enforce architecture in JS/TS, React, Vue and Node projects: circular imports, layer rules, restricted modules and module boundaries.",
+  "keywords": [
+    "architecture",
+    "imports",
+    "circular-dependencies",
+    "layers",
+    "boundaries",
+    "lint"
+  ],
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "unpkg": "./dist/archcheck.min.js",
+  "jsdelivr": "./dist/archcheck.min.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/types/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./cdn": "./dist/archcheck.min.js",
+    "./cdn/esm": "./dist/archcheck.esm.js",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "archcheck": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build.mjs"
+  },
+  "devchecks": {
+    "global": "ArchCheck",
+    "cdn": "archcheck",
+    "node": [
+      "src/node.ts",
+      "src/cli.ts"
+    ]
+  },
+  "dependencies": {
+    "@devchecks/core": "^0.1.0"
+  }
+}

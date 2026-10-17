@@ -1,0 +1,59 @@
+{
+  "name": "@devchecks/configcheck",
+  "version": "0.1.0",
+  "description": "Validate configuration: .env drift against .env.example, required and typed variables, JSON/YAML syntax, and risky settings such as debug mode, CORS wildcards and disabled TLS verification.",
+  "keywords": [
+    "config",
+    "dotenv",
+    "env",
+    "yaml",
+    "validation",
+    "security"
+  ],
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "unpkg": "./dist/configcheck.min.js",
+  "jsdelivr": "./dist/configcheck.min.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/types/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./cdn": "./dist/configcheck.min.js",
+    "./cdn/esm": "./dist/configcheck.esm.js",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "configcheck": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build.mjs"
+  },
+  "devchecks": {
+    "global": "ConfigCheck",
+    "cdn": "configcheck",
+    "node": [
+      "src/node.ts",
+      "src/cli.ts"
+    ]
+  },
+  "dependencies": {
+    "@devchecks/core": "^0.1.0",
+    "yaml": "^2.6.0"
+  }
+}

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>devchecks from a CDN</title>
+    <!-- Each library is a single, independent file. Load only the ones you need. -->
+    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/perfcheck.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/accesscheck.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/secretcheck.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/safecodecheck.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/archcheck.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/configcheck.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/licensecheck.min.js"></script>
+    <style>
+      body { font: 15px/1.5 system-ui, sans-serif; margin: 2rem auto; max-width: 60rem; padding: 0 1rem; }
+      pre { background: #f4f4f5; padding: 1rem; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>devchecks from a CDN</h1>
+      <p>Open the console, or read the results below. Every library returns findings in the same shape.</p>
+      <button><svg aria-hidden="true" width="16" height="16"></svg></button> <!-- icon-only button with no accessible name -->
+      <pre id="out">Running…</pre>
+    </main>
+    <script type="module">
+      // ES module builds work too:
+      // import { analyze } from 'https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/archcheck.esm.js';
+      const token = 'ghp_' + 'A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q7r8';
+      const results = {
+        secretcheck: SecretCheck.scanText(`const t = "${token}"`, 'config.js'),
+        safecodecheck: SafeCodeCheck.analyzeSource('el.innerHTML = location.hash;', 'app.js').findings,
+        archcheck: ArchCheck.analyze({ 'src/a.ts': "import './b'", 'src/b.ts': "import './a'" }).findings,
+        configcheck: ConfigCheck.checkConfigText('debug: true\ncors:\n  origin: "*"\n', 'config/production.yaml'),
+        licensecheck: LicenseCheck.checkLicenses([{ name: 'some-lib', version: '1.0.0', license: 'AGPL-3.0-only' }]),
+        accesscheck: (await AccessCheck.scan()).findings,
+        perfcheck: (await PerfCheck.measure({ settleMs: 500 })).vitals,
+      };
+      const summary = Object.fromEntries(
+        Object.entries(results).map(([tool, r]) => [tool, Array.isArray(r) ? r.map((f) => `${f.severity} ${f.ruleId}: ${f.message}`) : r]),
+      );
+      document.getElementById('out').textContent = JSON.stringify(summary, null, 2);
+      console.log(results);
+    </script>
+  </body>
+</html>

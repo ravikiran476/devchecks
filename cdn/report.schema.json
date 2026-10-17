@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@main/cdn/report.schema.json",
+  "title": "devchecks report",
+  "description": "Common output of every devchecks tool (--format json). Version 1.",
+  "type": "object",
+  "required": ["schemaVersion", "tool", "version", "generatedAt", "findings", "summary"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "tool": { "type": "string", "description": "Tool that produced the report, or \"devchecks\" for a merged report." },
+    "version": { "type": "string" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "notes": { "type": "array", "items": { "type": "string" } },
+    "baseline": {
+      "type": "object",
+      "required": ["new", "existing", "fixed"],
+      "properties": {
+        "new": { "type": "integer", "minimum": 0 },
+        "existing": { "type": "integer", "minimum": 0 },
+        "fixed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total", "bySeverity"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "bySeverity": {
+          "type": "object",
+          "required": ["critical", "high", "medium", "low", "info"],
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "findings": { "type": "array", "items": { "$ref": "#/$defs/finding" } }
+  },
+  "$defs": {
+    "severity": { "enum": ["critical", "high", "medium", "low", "info"] },
+    "finding": {
+      "type": "object",
+      "required": ["fingerprint", "ruleId", "severity", "message"],
+      "properties": {
+        "tool": { "type": "string" },
+        "fingerprint": { "type": "string", "description": "Stable id used by baselines." },
+        "ruleId": { "type": "string" },
+        "severity": { "$ref": "#/$defs/severity" },
+        "message": { "type": "string" },
+        "location": {
+          "type": "object",
+          "properties": {
+            "file": { "type": "string" },
+            "line": { "type": "integer", "minimum": 1 },
+            "column": { "type": "integer", "minimum": 1 },
+            "selector": { "type": "string" },
+            "url": { "type": "string" }
+          }
+        },
+        "remediation": { "type": "string" },
+        "snippet": { "type": "string" },
+        "helpUrl": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "meta": { "type": "object" }
+      }
+    }
+  }
+}

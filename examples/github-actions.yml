@@ -1,0 +1,59 @@
+# Example CI job: run the static checks independently, upload SARIF to GitHub code scanning,
+# and post one merged Markdown summary. Copy to .github/workflows/devchecks.yml.
+name: devchecks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write # SARIF upload
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # Each tool runs on its own. `|| true` keeps the job going so every report is produced;
+      # the merge step below decides pass/fail.
+      - run: npx @devchecks/secretcheck scan . -f json -o reports/secrets.json || true
+      - run: npx @devchecks/depcheck --production -f json -o reports/deps.json || true
+      - run: npx @devchecks/archcheck -f json -o reports/arch.json || true
+      - run: npx @devchecks/safecodecheck -f json -o reports/code.json || true
+      - run: npx @devchecks/configcheck -f json -o reports/config.json || true
+      - run: npx @devchecks/licensecheck --production -f json -o reports/licenses.json || true
+
+      - name: SARIF for code scanning
+        run: npx @devchecks/core merge reports/*.json -f sarif -o devchecks.sarif
+      - uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: devchecks.sarif
+          category: devchecks
+
+      - name: Summary and gate
+        run: |
+          npx @devchecks/core merge reports/*.json -f markdown -o summary.md
+          cat summary.md >> "$GITHUB_STEP_SUMMARY"
+          npx @devchecks/core merge reports/*.json --fail-on high > /dev/null
+
+  # Browser-based checks need the app running.
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci && npx playwright install --with-deps chromium
+      - run: npm run build && (npm run preview -- --port 4173 &) && npx wait-on http://localhost:4173
+      - run: npx accesscheck / /checkout -b http://localhost:4173 --baseline a11y-baseline.json
+      - run: npx perfcheck bundles dist && npx perfcheck / -b http://localhost:4173 --runs 3

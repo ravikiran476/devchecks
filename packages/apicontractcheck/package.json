@@ -1,0 +1,59 @@
+{
+  "name": "@devchecks/apicontractcheck",
+  "version": "0.1.0",
+  "description": "Check APIs against their OpenAPI contract: validate real responses (live, HAR files or a fetch wrapper) and detect breaking changes between spec versions.",
+  "keywords": [
+    "openapi",
+    "swagger",
+    "contract-testing",
+    "api",
+    "breaking-changes",
+    "har"
+  ],
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "unpkg": "./dist/apicontractcheck.min.js",
+  "jsdelivr": "./dist/apicontractcheck.min.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/types/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./cdn": "./dist/apicontractcheck.min.js",
+    "./cdn/esm": "./dist/apicontractcheck.esm.js",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "apicontractcheck": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build.mjs"
+  },
+  "devchecks": {
+    "global": "APIContractCheck",
+    "cdn": "apicontractcheck",
+    "node": [
+      "src/node.ts",
+      "src/cli.ts"
+    ]
+  },
+  "dependencies": {
+    "@devchecks/core": "^0.1.0",
+    "yaml": "^2.6.0"
+  }
+}

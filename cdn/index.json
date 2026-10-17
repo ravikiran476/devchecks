@@ -1,0 +1,82 @@
+[
+  {
+    "name": "@devchecks/accesscheck",
+    "version": "0.1.0",
+    "global": "AccessCheck",
+    "script": "accesscheck.min.js",
+    "module": "accesscheck.esm.js",
+    "description": "Accessibility checks powered by axe-core: scan pages in the browser or local dev URLs with Playwright, with selectors, suggested fixes and baselines."
+  },
+  {
+    "name": "@devchecks/apicontractcheck",
+    "version": "0.1.0",
+    "global": "APIContractCheck",
+    "script": "apicontractcheck.min.js",
+    "module": "apicontractcheck.esm.js",
+    "description": "Check APIs against their OpenAPI contract: validate real responses (live, HAR files or a fetch wrapper) and detect breaking changes between spec versions."
+  },
+  {
+    "name": "@devchecks/archcheck",
+    "version": "0.1.0",
+    "global": "ArchCheck",
+    "script": "archcheck.min.js",
+    "module": "archcheck.esm.js",
+    "description": "Enforce architecture in JS/TS, React, Vue and Node projects: circular imports, layer rules, restricted modules and module boundaries."
+  },
+  {
+    "name": "@devchecks/configcheck",
+    "version": "0.1.0",
+    "global": "ConfigCheck",
+    "script": "configcheck.min.js",
+    "module": "configcheck.esm.js",
+    "description": "Validate configuration: .env drift against .env.example, required and typed variables, JSON/YAML syntax, and risky settings such as debug mode, CORS wildcards and disabled TLS verification."
+  },
+  {
+    "name": "@devchecks/depcheck",
+    "version": "0.1.0",
+    "global": "DepCheck",
+    "script": "depcheck.min.js",
+    "module": "depcheck.esm.js",
+    "description": "Check npm, Yarn and pnpm lockfiles or installed trees against the OSV vulnerability database, with fixed-version guidance and severity thresholds."
+  },
+  {
+    "name": "@devchecks/licensecheck",
+    "version": "0.1.0",
+    "global": "LicenseCheck",
+    "script": "licensecheck.min.js",
+    "module": "licensecheck.esm.js",
+    "description": "Dependency license inventory and policy checks with SPDX expressions: deny/allow lists, copyleft and unknown licenses, and third-party attribution files."
+  },
+  {
+    "name": "@devchecks/pci-pagecheck",
+    "version": "0.1.0",
+    "global": "PCIPageCheck",
+    "script": "pci-pagecheck.min.js",
+    "module": "pci-pagecheck.esm.js",
+    "description": "PCI DSS readiness aid for payment pages: script inventory against an approved baseline, CSP review, card-data exposure checks and control-mapped evidence."
+  },
+  {
+    "name": "@devchecks/perfcheck",
+    "version": "0.1.0",
+    "global": "PerfCheck",
+    "script": "perfcheck.min.js",
+    "module": "perfcheck.esm.js",
+    "description": "Performance budgets: Core Web Vitals and resource weight in the browser, bundle size budgets (gzip/brotli) and Playwright lab runs in CI."
+  },
+  {
+    "name": "@devchecks/safecodecheck",
+    "version": "0.1.0",
+    "global": "SafeCodeCheck",
+    "script": "safecodecheck.min.js",
+    "module": "safecodecheck.esm.js",
+    "description": "AST-based detection of unsafe DOM insertion, dynamic code execution, insecure randomness and risky URL handling, with remediation guidance."
+  },
+  {
+    "name": "@devchecks/secretcheck",
+    "version": "0.1.0",
+    "global": "SecretCheck",
+    "script": "secretcheck.min.js",
+    "module": "secretcheck.esm.js",
+    "description": "Detect credentials and high-entropy secrets in staged Git content before they are committed. Secrets are never printed in full."
+  }
+]

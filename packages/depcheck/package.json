@@ -1,0 +1,58 @@
+{
+  "name": "@devchecks/depcheck",
+  "version": "0.1.0",
+  "description": "Check npm, Yarn and pnpm lockfiles or installed trees against the OSV vulnerability database, with fixed-version guidance and severity thresholds.",
+  "keywords": [
+    "vulnerabilities",
+    "osv",
+    "sca",
+    "lockfile",
+    "npm",
+    "security"
+  ],
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "unpkg": "./dist/depcheck.min.js",
+  "jsdelivr": "./dist/depcheck.min.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/types/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./cdn": "./dist/depcheck.min.js",
+    "./cdn/esm": "./dist/depcheck.esm.js",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "depcheck": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build.mjs"
+  },
+  "devchecks": {
+    "global": "DepCheck",
+    "cdn": "depcheck",
+    "node": [
+      "src/node.ts",
+      "src/cli.ts"
+    ]
+  },
+  "dependencies": {
+    "@devchecks/core": "^0.1.0"
+  }
+}

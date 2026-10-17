@@ -1,0 +1,64 @@
+{
+  "name": "@devchecks/safecodecheck",
+  "version": "0.1.0",
+  "description": "AST-based detection of unsafe DOM insertion, dynamic code execution, insecure randomness and risky URL handling, with remediation guidance.",
+  "keywords": [
+    "security",
+    "xss",
+    "sast",
+    "ast",
+    "eslint",
+    "static-analysis"
+  ],
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "unpkg": "./dist/safecodecheck.min.js",
+  "jsdelivr": "./dist/safecodecheck.min.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/types/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./cdn": "./dist/safecodecheck.min.js",
+    "./cdn/esm": "./dist/safecodecheck.esm.js",
+    "./eslint": {
+      "types": "./dist/types/eslint.d.ts",
+      "default": "./dist/eslint.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "safecodecheck": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build.mjs"
+  },
+  "devchecks": {
+    "global": "SafeCodeCheck",
+    "cdn": "safecodecheck",
+    "node": [
+      "src/node.ts",
+      "src/cli.ts",
+      "src/eslint.ts"
+    ]
+  },
+  "dependencies": {
+    "@devchecks/core": "^0.1.0",
+    "@babel/parser": "^7.26.0"
+  }
+}

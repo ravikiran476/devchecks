@@ -1,0 +1,66 @@
+{
+  "name": "@devchecks/pci-pagecheck",
+  "version": "0.1.0",
+  "description": "PCI DSS readiness aid for payment pages: script inventory against an approved baseline, CSP review, card-data exposure checks and control-mapped evidence.",
+  "keywords": [
+    "pci",
+    "pci-dss",
+    "csp",
+    "payment",
+    "script-inventory",
+    "security"
+  ],
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "unpkg": "./dist/pci-pagecheck.min.js",
+  "jsdelivr": "./dist/pci-pagecheck.min.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/types/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./cdn": "./dist/pci-pagecheck.min.js",
+    "./cdn/esm": "./dist/pci-pagecheck.esm.js",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "pci-pagecheck": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build.mjs"
+  },
+  "devchecks": {
+    "global": "PCIPageCheck",
+    "cdn": "pci-pagecheck",
+    "node": [
+      "src/node.ts",
+      "src/cli.ts"
+    ]
+  },
+  "dependencies": {
+    "@devchecks/core": "^0.1.0"
+  },
+  "peerDependencies": {
+    "playwright": ">=1.40.0"
+  },
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": true
+    }
+  }
+}

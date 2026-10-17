@@ -1,0 +1,41 @@
+{
+  "name": "@devchecks/core",
+  "version": "0.1.0",
+  "description": "Shared finding model, baselines and reporters (text, JSON, SARIF, Markdown) for the devchecks family.",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/types/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./report.schema.json": "./report.schema.json"
+  },
+  "files": [
+    "dist",
+    "report.schema.json",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node ../../scripts/build.mjs"
+  },
+  "devchecks": {
+    "node": [
+      "src/node.ts",
+      "src/cli.ts"
+    ]
+  },
+  "bin": {
+    "devchecks": "./dist/cli.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

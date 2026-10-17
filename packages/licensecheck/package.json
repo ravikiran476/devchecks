@@ -1,0 +1,58 @@
+{
+  "name": "@devchecks/licensecheck",
+  "version": "0.1.0",
+  "description": "Dependency license inventory and policy checks with SPDX expressions: deny/allow lists, copyleft and unknown licenses, and third-party attribution files.",
+  "keywords": [
+    "license",
+    "spdx",
+    "compliance",
+    "oss",
+    "attribution",
+    "notice"
+  ],
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "unpkg": "./dist/licensecheck.min.js",
+  "jsdelivr": "./dist/licensecheck.min.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/types/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./cdn": "./dist/licensecheck.min.js",
+    "./cdn/esm": "./dist/licensecheck.esm.js",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "licensecheck": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build.mjs"
+  },
+  "devchecks": {
+    "global": "LicenseCheck",
+    "cdn": "licensecheck",
+    "node": [
+      "src/node.ts",
+      "src/cli.ts"
+    ]
+  },
+  "dependencies": {
+    "@devchecks/core": "^0.1.0"
+  }
+}

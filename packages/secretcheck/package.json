@@ -1,0 +1,57 @@
+{
+  "name": "@devchecks/secretcheck",
+  "version": "0.1.0",
+  "description": "Detect credentials and high-entropy secrets in staged Git content before they are committed. Secrets are never printed in full.",
+  "keywords": [
+    "secrets",
+    "git",
+    "pre-commit",
+    "credentials",
+    "security"
+  ],
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "unpkg": "./dist/secretcheck.min.js",
+  "jsdelivr": "./dist/secretcheck.min.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/types/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./cdn": "./dist/secretcheck.min.js",
+    "./cdn/esm": "./dist/secretcheck.esm.js",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "secretcheck": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build.mjs"
+  },
+  "devchecks": {
+    "global": "SecretCheck",
+    "cdn": "secretcheck",
+    "node": [
+      "src/node.ts",
+      "src/cli.ts"
+    ]
+  },
+  "dependencies": {
+    "@devchecks/core": "^0.1.0"
+  }
+}
