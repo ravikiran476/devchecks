@@ -4,6 +4,18 @@
   "description": "Shared finding model, baselines and reporters (text, JSON, SARIF, Markdown) for the devchecks family.",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ravikiran476/devchecks.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/ravikiran476/devchecks/tree/main/packages/core#readme",
+  "bugs": {
+    "url": "https://github.com/ravikiran476/devchecks/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "main": "./dist/index.js",
   "types": "./dist/types/index.d.ts",
@@ -33,7 +45,7 @@
     ]
   },
   "bin": {
-    "devchecks": "./dist/cli.js"
+    "devchecks": "dist/cli.js"
   },
   "engines": {
     "node": ">=20"

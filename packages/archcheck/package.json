@@ -12,6 +12,18 @@
   ],
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ravikiran476/devchecks.git",
+    "directory": "packages/archcheck"
+  },
+  "homepage": "https://github.com/ravikiran476/devchecks/tree/main/packages/archcheck#readme",
+  "bugs": {
+    "url": "https://github.com/ravikiran476/devchecks/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -32,7 +44,7 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "archcheck": "./dist/cli.js"
+    "archcheck": "dist/cli.js"
   },
   "files": [
     "dist",

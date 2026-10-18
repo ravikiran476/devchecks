@@ -11,6 +11,18 @@
   ],
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ravikiran476/devchecks.git",
+    "directory": "packages/secretcheck"
+  },
+  "homepage": "https://github.com/ravikiran476/devchecks/tree/main/packages/secretcheck#readme",
+  "bugs": {
+    "url": "https://github.com/ravikiran476/devchecks/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -31,7 +43,7 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "secretcheck": "./dist/cli.js"
+    "secretcheck": "dist/cli.js"
   },
   "files": [
     "dist",

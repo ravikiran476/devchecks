@@ -27,7 +27,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check": "npm run typecheck && npm test && npm run build",
-    "cdn": "npm run build && node scripts/cdn.mjs"
+    "cdn": "npm run build && node scripts/cdn.mjs",
+    "release": "npm run check && node scripts/publish.mjs"
   },
   "devDependencies": {
     "@types/jsdom": "^30.0.0",
