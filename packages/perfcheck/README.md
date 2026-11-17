@@ -13,7 +13,7 @@ Without explicit budgets, metrics are checked against Google's Core Web Vitals t
 ```bash
 npx @devchecks/perfcheck bundles dist
 npm i -D @devchecks/perfcheck playwright && npx playwright install chromium
-npx perfcheck http://localhost:4173/ /products --runs 5 --cpu 4 --network slow-4g
+npx @devchecks/perfcheck http://localhost:4173/ /products --runs 5 --cpu 4 --network slow-4g
 ```
 
 `perfcheck.config.json`:
@@ -41,7 +41,7 @@ Sizes accept `B`, `kB`/`MB` (1000) and `KiB`/`MiB` (1024). Hashes in file names 
 Load it early in `<head>` so it sees every layout shift and interaction:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/perfcheck.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/perfcheck.min.js" integrity="sha384-N/sCn1IZL1ApGo/PtAfqtB1L+F618ox191hmC+xPTNboBOQkeXTKKwKklQ1Sx9am" crossorigin="anonymous"></script>
 <script>
   PerfCheck.measure({ budgets: { lcp: 2500 } }).then((r) => console.table(r.vitals));
   PerfCheck.onPageHidden((vitals) => navigator.sendBeacon('/rum', JSON.stringify(vitals)));

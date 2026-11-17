@@ -55,5 +55,6 @@ jobs:
           cache: npm
       - run: npm ci && npx playwright install --with-deps chromium
       - run: npm run build && (npm run preview -- --port 4173 &) && npx wait-on http://localhost:4173
-      - run: npx accesscheck / /checkout -b http://localhost:4173 --baseline a11y-baseline.json
-      - run: npx perfcheck bundles dist && npx perfcheck / -b http://localhost:4173 --runs 3
+      # Scoped names: unscoped "accesscheck"/"perfcheck" are not these packages on npm.
+      - run: npx @devchecks/accesscheck / /checkout -b http://localhost:4173 --baseline a11y-baseline.json
+      - run: npx @devchecks/perfcheck bundles dist && npx @devchecks/perfcheck / -b http://localhost:4173 --runs 3

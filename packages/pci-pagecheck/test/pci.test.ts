@@ -9,6 +9,7 @@ import {
   collectDom,
   evidenceToMarkdown,
   luhn,
+  maskPans,
   scanSourceForCardData,
   type PageSnapshot,
 } from '../src/index.js';
@@ -132,6 +133,19 @@ describe('card data exposure', () => {
     expect(findings).toHaveLength(1);
     expect(findings[0]!.message).toContain('453201******0366');
     expect(findings[0]!.snippet).not.toContain('4532015112830366');
+  });
+
+  it('never repeats a card number in a report, even with several on one line', () => {
+    const a = '4532015112830366';
+    const b = '5425233430109903';
+    const spaced = '4539 5787 6362 1486';
+    const code = `const cards = ['${a}', '${b}', '${spaced}'];\nconsole.log('cardNumber', '${a}');`;
+    const findings = scanSourceForCardData(code, 'fixtures.js');
+    expect(findings.map((f) => f.ruleId)).toEqual(['pan-literal', 'pan-literal', 'pan-literal', 'card-data-logging', 'pan-literal']);
+    const report = JSON.stringify(findings);
+    for (const pan of [a, b, spaced]) expect(report).not.toContain(pan);
+    expect(findings[0]!.snippet).toBe("const cards = ['453201******0366', '542523******9903', '453957******1486'];");
+    expect(maskPans('order 1234567890123456789 shipped')).toBe('order 1234567890123456789 shipped'); // not Luhn-valid: left alone
   });
 });
 

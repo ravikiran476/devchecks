@@ -23,7 +23,7 @@ Options:
   -h, --help                Show help
 
 Requires Playwright: npm i -D playwright && npx playwright install chromium
-Exit codes: 0 ok, 1 issues at or above --fail-on, 2 error.`;
+Exit codes: 0 ok, 1 issues at or above --fail-on, 2 error (including any page that could not be scanned).`;
 
 interface AccessCheckConfig extends Omit<NodeScanOptions, 'onPage'> {
   pages?: Array<string | Omit<PageTarget, 'setup'>>;
@@ -76,7 +76,9 @@ runCli(async () => {
     return failed.length ? 2 : 0;
   }
   const diff = diffBaseline(findings, loadBaselineFile(values.baseline));
-  writeOutput(formatReport(toReport(diff.newFindings, values.baseline ? diff : undefined), format, { color: useColor() && !values.output }), values.output);
-  if (failed.length === results.length) return 2;
+  const notes = failed.length ? [`Incomplete: ${failed.length} of ${results.length} page(s) could not be scanned (${failed.map((p) => p.url).join(', ')}).`] : [];
+  writeOutput(formatReport(toReport(diff.newFindings, values.baseline ? diff : undefined, notes), format, { color: useColor() && !values.output }), values.output);
+  // A page that was not scanned has not passed. Exit 2 so a partly failed run cannot look green.
+  if (failed.length) return 2;
   return diff.newFindings.some((f) => meetsThreshold(f.severity, failOn)) ? 1 : 0;
 });

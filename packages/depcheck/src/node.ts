@@ -1,8 +1,8 @@
 import { existsSync, readdirSync, readFileSync, realpathSync } from 'node:fs';
-import { join, relative, resolve } from 'node:path';
+import { basename, join, relative, resolve } from 'node:path';
 import { normalizePath } from '@devchecks/core';
 import { checkDependencies, type CheckOptions, type VulnerabilityFinding } from './analyze.js';
-import { parseLockfile, type Dependency } from './lockfiles.js';
+import { detectLockfileKind, lockfileHasDevInfo, parseLockfile, type Dependency } from './lockfiles.js';
 
 export * from './index.js';
 
@@ -84,20 +84,30 @@ export interface ProjectCheckOptions extends CheckOptions {
 export async function checkProject(
   projectDir = '.',
   options: ProjectCheckOptions = {},
-): Promise<{ source: string; dependencies: Dependency[]; findings: VulnerabilityFinding[] }> {
+): Promise<{ source: string; dependencies: Dependency[]; findings: VulnerabilityFinding[]; notes: string[] }> {
   const dir = resolve(projectDir);
+  const notes: string[] = [];
   let source: string;
   let deps: Dependency[];
+  // What the dependency list can say about development-only packages; undefined when it can.
+  let noDevInfo: string | undefined;
   if (options.installed) {
     source = normalizePath(relative(process.cwd(), join(dir, 'node_modules'))) || 'node_modules';
     deps = readInstalledTree(dir);
     if (!deps.length) throw new Error(`No installed packages found under ${join(dir, 'node_modules')}`);
+    noDevInfo = 'an installed node_modules tree';
   } else {
     const lockfile = options.lockfile ? resolve(options.lockfile) : findLockfile(dir);
     if (!lockfile) throw new Error(`No lockfile found in ${dir} (looked for ${LOCKFILES.join(', ')}). Use --installed to scan node_modules.`);
     source = normalizePath(relative(process.cwd(), lockfile));
-    deps = parseLockfile(lockfile, readFileSync(lockfile, 'utf8'));
+    const text = readFileSync(lockfile, 'utf8');
+    deps = parseLockfile(lockfile, text);
+    if (!lockfileHasDevInfo(detectLockfileKind(lockfile, text), deps)) noDevInfo = basename(lockfile);
+  }
+  if (options.production && noDevInfo) {
+    // Say so rather than let "production only" quietly mean "everything".
+    notes.push(`--production had no effect: ${noDevInfo} does not record which packages are development-only, so all ${deps.length} package versions were checked.`);
   }
   const findings = await checkDependencies(deps, { source, ...options });
-  return { source, dependencies: deps, findings };
+  return { source, dependencies: deps, findings, notes };
 }

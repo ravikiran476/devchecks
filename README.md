@@ -3,24 +3,24 @@
 Ten small, independent checkers for web projects. Every library is a **single file on a public CDN** that anyone can drop into a page. No install, account or build step is needed:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/accesscheck.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/accesscheck.min.js" integrity="sha384-JlDlnfau0L7U2RAemvsKXmzgjZ78q0Qb6bZ0gNiI43Wm9IwqdQS2Sph++b977hUz" crossorigin="anonymous"></script>
 <script>AccessCheck.scan().then((r) => console.table(r.findings));</script>
 ```
 
 | Library | `<script>` global | ES module |
 |---|---|---|
-| AccessCheck | [`accesscheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/accesscheck.min.js) → `AccessCheck` | [`accesscheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/accesscheck.esm.js) |
-| SecretCheck | [`secretcheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/secretcheck.min.js) → `SecretCheck` | [`secretcheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/secretcheck.esm.js) |
-| DepCheck | [`depcheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/depcheck.min.js) → `DepCheck` | [`depcheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/depcheck.esm.js) |
-| PCI PageCheck | [`pci-pagecheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/pci-pagecheck.min.js) → `PCIPageCheck` | [`pci-pagecheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/pci-pagecheck.esm.js) |
-| ArchCheck | [`archcheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/archcheck.min.js) → `ArchCheck` | [`archcheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/archcheck.esm.js) |
-| SafeCodeCheck | [`safecodecheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/safecodecheck.min.js) → `SafeCodeCheck` | [`safecodecheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/safecodecheck.esm.js) |
-| ConfigCheck | [`configcheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/configcheck.min.js) → `ConfigCheck` | [`configcheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/configcheck.esm.js) |
-| PerfCheck | [`perfcheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/perfcheck.min.js) → `PerfCheck` | [`perfcheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/perfcheck.esm.js) |
-| APIContractCheck | [`apicontractcheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/apicontractcheck.min.js) → `APIContractCheck` | [`apicontractcheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/apicontractcheck.esm.js) |
-| LicenseCheck | [`licensecheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/licensecheck.min.js) → `LicenseCheck` | [`licensecheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/licensecheck.esm.js) |
+| AccessCheck | [`accesscheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/accesscheck.min.js) → `AccessCheck` | [`accesscheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/accesscheck.esm.js) |
+| SecretCheck | [`secretcheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/secretcheck.min.js) → `SecretCheck` | [`secretcheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/secretcheck.esm.js) |
+| DepCheck | [`depcheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/depcheck.min.js) → `DepCheck` | [`depcheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/depcheck.esm.js) |
+| PCI PageCheck | [`pci-pagecheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/pci-pagecheck.min.js) → `PCIPageCheck` | [`pci-pagecheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/pci-pagecheck.esm.js) |
+| ArchCheck | [`archcheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/archcheck.min.js) → `ArchCheck` | [`archcheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/archcheck.esm.js) |
+| SafeCodeCheck | [`safecodecheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/safecodecheck.min.js) → `SafeCodeCheck` | [`safecodecheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/safecodecheck.esm.js) |
+| ConfigCheck | [`configcheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/configcheck.min.js) → `ConfigCheck` | [`configcheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/configcheck.esm.js) |
+| PerfCheck | [`perfcheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/perfcheck.min.js) → `PerfCheck` | [`perfcheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/perfcheck.esm.js) |
+| APIContractCheck | [`apicontractcheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/apicontractcheck.min.js) → `APIContractCheck` | [`apicontractcheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/apicontractcheck.esm.js) |
+| LicenseCheck | [`licensecheck.min.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/licensecheck.min.js) → `LicenseCheck` | [`licensecheck.esm.js`](https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/licensecheck.esm.js) |
 
-Use a tag (`@v0.1.0`) in production: tagged files never change. `@main` always serves the latest build. `cdn/index.json` lists every library, and `cdn/report.schema.json` is the shared report schema.
+Use a tag (`@v0.2.0`) in production: tagged files never change. `@main` always serves the latest build. `cdn/index.json` lists every library with its Subresource Integrity hashes (`scriptIntegrity`, `moduleIntegrity`), and `cdn/report.schema.json` is the shared report schema. The `<script>` examples in these docs already include `integrity`, so a browser refuses a file that differs from the released one. See [CHANGELOG.md](CHANGELOG.md) for what changed in each version.
 
 Each library is also an npm package with a **CLI** and a Node API for the jobs a browser can't do, such as reading staged Git content or driving Playwright. See [Publishing](#publishing) for the npm side.
 
@@ -82,14 +82,14 @@ See [examples/github-actions.yml](examples/github-actions.yml) for a CI job that
 
 ```html
 <!-- Global build -->
-<script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/accesscheck.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/accesscheck.min.js" integrity="sha384-JlDlnfau0L7U2RAemvsKXmzgjZ78q0Qb6bZ0gNiI43Wm9IwqdQS2Sph++b977hUz" crossorigin="anonymous"></script>
 <script>
   AccessCheck.scan().then((r) => console.table(r.findings));
 </script>
 
 <!-- ES module build -->
 <script type="module">
-  import { analyzeSource } from 'https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/safecodecheck.esm.js';
+  import { analyzeSource } from 'https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/safecodecheck.esm.js';
   console.log(analyzeSource('el.innerHTML = location.hash', 'a.js').findings);
 </script>
 ```
@@ -140,11 +140,14 @@ npx playwright install chromium   # only for the Playwright-based CLIs
 
 ## Publishing
 
+Versions follow semver. While the major version is 0, a minor bump (`0.2.0`) may change behaviour and a patch bump (`0.2.1`) only fixes bugs. Record each change in [CHANGELOG.md](CHANGELOG.md).
+
 **CDN release** (what most users need):
 
-1. Bump versions, then `npm run cdn` (builds every package and refreshes `cdn/`). CI fails if `cdn/` is out of date.
-2. Commit, then tag and push: `git tag v0.2.0 && git push origin main v0.2.0`.
-3. The new files are live at `https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/<tool>.min.js`.
+1. `npm run bump -- 0.3.0` sets the version on every package, the lockfile and the CDN links in the docs.
+2. `npm run check && npm run cdn` tests, builds, refreshes `cdn/` and writes the integrity hashes into the docs. CI fails if `cdn/` or the docs are out of date.
+3. Commit, then tag and push: `git tag v0.3.0 && git push origin main v0.3.0`.
+4. The new files are live at `https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.3.0/cdn/<tool>.min.js`.
 
 **npm** (optional, for the CLIs and `import` from a bundler):
 

@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>devchecks from a CDN</title>
     <!-- Each library is a single, independent file. Load only the ones you need. -->
-    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/perfcheck.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/accesscheck.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/secretcheck.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/safecodecheck.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/archcheck.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/configcheck.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/licensecheck.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/perfcheck.min.js" integrity="sha384-N/sCn1IZL1ApGo/PtAfqtB1L+F618ox191hmC+xPTNboBOQkeXTKKwKklQ1Sx9am" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/accesscheck.min.js" integrity="sha384-JlDlnfau0L7U2RAemvsKXmzgjZ78q0Qb6bZ0gNiI43Wm9IwqdQS2Sph++b977hUz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/secretcheck.min.js" integrity="sha384-iI/0MLExdXoMJ4I0Dl8VPwVNZKsD8TLAAV715M5f3AFy4RqI8BHC8nqW1GHx4Y6D" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/safecodecheck.min.js" integrity="sha384-vLgjeKoIeoaoIPANSLowx05VJpbdmdItSb+PghoOyDrCzYAUBnppKi+qVtlG6NBJ" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/archcheck.min.js" integrity="sha384-YakYfMwftoHssxpF4GUHYtBXUBq4uqGwXaQTbZgR6Hnne7LJA1imP12FVLCexZlu" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/configcheck.min.js" integrity="sha384-8MAHttR5LQ+YOdd4PNcILWxFM138O9op2Ou/j4vUjS/gbx2Do8LFuIVT80HCXqK8" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/licensecheck.min.js" integrity="sha384-+xddisLpeWxR3CU/KGxDhTJP1apUhbkMsMsZMuRys5ESU6kNa7VhNHU2iljkl0Hg" crossorigin="anonymous"></script>
     <style>
       body { font: 15px/1.5 system-ui, sans-serif; margin: 2rem auto; max-width: 60rem; padding: 0 1rem; }
       pre { background: #f4f4f5; padding: 1rem; overflow: auto; }
@@ -26,7 +26,7 @@
     </main>
     <script type="module">
       // ES module builds work too:
-      // import { analyze } from 'https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/archcheck.esm.js';
+      // import { analyze } from 'https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/archcheck.esm.js';
       const token = 'ghp_' + 'A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q7r8';
       const results = {
         secretcheck: SecretCheck.scanText(`const t = "${token}"`, 'config.js'),

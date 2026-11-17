@@ -15,6 +15,7 @@ export {
 } from './analyze.js';
 export {
   detectLockfileKind,
+  lockfileHasDevInfo,
   parseLockfile,
   parseNpmLs,
   parsePackageLock,
@@ -37,9 +38,9 @@ export async function checkLockfile(text: string, options: CheckOptions & { file
   return checkDependencies(parseLockfile(filename, text), { source: filename, ...options });
 }
 
-export function toReport(findings: VulnerabilityFinding[], baseline?: BaselineDiff): Report {
+export function toReport(findings: VulnerabilityFinding[], baseline?: BaselineDiff, notes: string[] = []): Report {
   return createReport(TOOL, VERSION, findings, {
     baseline,
-    notes: ['Vulnerability data from OSV.dev (GitHub Advisory Database, OpenSSF malicious packages and other sources).'],
+    notes: ['Vulnerability data from OSV.dev (GitHub Advisory Database, OpenSSF malicious packages and other sources).', ...notes],
   });
 }

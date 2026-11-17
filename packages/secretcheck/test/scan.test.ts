@@ -1,10 +1,10 @@
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { formatReport } from '@devchecks/core';
-import { isExcluded, redact, scanFiles, scanText, toReport } from '../src/index.js';
+import { isBlocking, isExcluded, redact, scanFiles, scanText, toReport } from '../src/index.js';
 import { scanStaged } from '../src/node.js';
 
 // Built at runtime so this test file never contains a literal credential.
@@ -86,6 +86,44 @@ describe('scanText', () => {
     expect(redact(GH)).toBe('ghp_********');
     expect(redact('short')).toBe('********');
   });
+
+  it('detects unquoted secrets in .env, YAML, INI and properties files', () => {
+    const hex = '9f8a7b6c5d4e' + '3f2a1b0c9d8e7f6a5b4c';
+    for (const [file, line] of [
+      ['.env', `DB_PASSWORD=${DB_PASSWORD}`],
+      ['.env.production', `export API_KEY=${hex}`],
+      ['config/app.yml', `  password: ${DB_PASSWORD}   # prod`],
+      ['deploy/values.yaml', `- clientSecret: ${DB_PASSWORD}`],
+      ['settings.ini', `auth_token = ${hex}`],
+      ['app.properties', `spring.datasource.password=${DB_PASSWORD}`],
+    ] as const) {
+      const findings = scanText(line, file);
+      expect(findings.map((f) => [f.ruleId, f.severity]), `${file}: ${line}`).toEqual([['config-secret-assignment', 'high']]);
+      expect(findings[0]!.snippet).not.toContain(DB_PASSWORD);
+      expect(findings[0]!.snippet).not.toContain(hex);
+    }
+  });
+
+  it('does not mistake config references, names and settings for secrets', () => {
+    const lines = [
+      'DB_PASSWORD=${DB_PASSWORD}',
+      'DB_PASSWORD=$DB_PASSWORD',
+      'password: changeme',
+      'secretName: my-app-secret-2024',
+      'tokenUrl: https://auth.example.com/oauth/token',
+      'PASSWORD_MIN_LENGTH=12characters',
+      'TOKEN_TTL=3600s',
+      'API_KEY_HEADER=X-Api-Key1',
+      'JWT_SECRET_FILE=/run/secrets/jwt1',
+      'token_issued: 2026-01-01T00:00:00Z',
+      'password: {{ vault_password_1 }}',
+      'image: registry.example.com/app:1.2.3',
+      'private_key_passphrase: *default_passphrase1',
+    ].join('\n');
+    expect(scanText(lines, 'config/app.yml').map((f) => f.snippet)).toEqual([]);
+    // The same line in source code is an expression, not a configuration value.
+    expect(scanText(`password = ${DB_PASSWORD}`, 'src/login.py')).toEqual([]);
+  });
 });
 
 describe('scanFiles', () => {
@@ -102,6 +140,17 @@ describe('scanFiles', () => {
     expect(result.findings.map((f) => f.location?.file)).toEqual(['src/real.ts']);
     expect(result.blocking).toHaveLength(1);
     expect(result.skipped.map((s) => s.reason)).toEqual(['excluded', 'marked @generated']);
+  });
+
+  it('blocks by severity, like the other devchecks tools', () => {
+    const files = [{ path: 'src/a.ts', content: `const password = "${PASSWORD}";\nconst x = "q8Zr3Lp0Vw7Kd2Nf5Hs9Tj4Bx6Mc1Ya";` }];
+    const severities = (failOn?: 'critical' | 'high' | 'medium') => scanFiles(files, { failOn }).blocking.map((f) => f.severity);
+    expect(scanFiles(files).findings.map((f) => f.severity)).toEqual(['high', 'medium']);
+    expect(severities()).toEqual([]); // default: only high-confidence (critical) matches block
+    expect(severities('critical')).toEqual([]);
+    expect(severities('high')).toEqual(['high']);
+    expect(severities('medium')).toEqual(['high', 'medium']);
+    expect(isBlocking(scanText(`t = "${GH}"`, 'a.ts')[0]!)).toBe(true);
   });
 });
 
@@ -135,5 +184,25 @@ describe('scanStaged', () => {
     git(dir, 'add', '.');
     const result = scanStaged({ cwd: dir, changedLinesOnly: true });
     expect(result.findings.map((f) => [f.ruleId, f.location?.line])).toEqual([['aws-access-key-id', 2]]);
+  });
+
+  it('finds added lines whatever diff prefix the Git config asks for', () => {
+    for (const setting of ['diff.mnemonicPrefix', 'diff.noprefix']) {
+      const dir = mkdtempSync(join(tmpdir(), 'secretcheck-'));
+      git(dir, 'init', '-q');
+      git(dir, 'config', setting, 'true');
+      mkdirSync(join(dir, 'b'));
+      writeFileSync(join(dir, 'b', 'with space.ts'), 'export const a = 1;\n');
+      git(dir, 'add', '.');
+      git(dir, 'commit', '-qm', 'init');
+      writeFileSync(join(dir, 'b', 'with space.ts'), `export const a = 1;\nexport const t = "${GH}";\n`);
+      writeFileSync(join(dir, 'new.ts'), `export const k = "${AWS}";\n`);
+      git(dir, 'add', '.');
+      const result = scanStaged({ cwd: dir, changedLinesOnly: true });
+      expect(result.findings.map((f) => [f.ruleId, f.location?.file, f.location?.line]), setting).toEqual([
+        ['github-token', 'b/with space.ts', 2],
+        ['aws-access-key-id', 'new.ts', 1],
+      ]);
+    }
   });
 });

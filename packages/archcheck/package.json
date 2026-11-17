@@ -1,6 +1,6 @@
 {
   "name": "@devchecks/archcheck",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Enforce architecture in JS/TS, React, Vue and Node projects: circular imports, layer rules, restricted modules and module boundaries.",
   "keywords": [
     "architecture",
@@ -65,6 +65,6 @@
     ]
   },
   "dependencies": {
-    "@devchecks/core": "^0.1.0"
+    "@devchecks/core": "^0.2.0"
   }
 }

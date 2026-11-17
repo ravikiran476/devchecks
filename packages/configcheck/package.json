@@ -1,6 +1,6 @@
 {
   "name": "@devchecks/configcheck",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Validate configuration: .env drift against .env.example, required and typed variables, JSON/YAML syntax, and risky settings such as debug mode, CORS wildcards and disabled TLS verification.",
   "keywords": [
     "config",
@@ -65,7 +65,7 @@
     ]
   },
   "dependencies": {
-    "@devchecks/core": "^0.1.0",
+    "@devchecks/core": "^0.2.0",
     "yaml": "^2.6.0"
   }
 }

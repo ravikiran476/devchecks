@@ -30,7 +30,7 @@ export interface OsvVulnerability {
   database_specific?: { severity?: string; cwe_ids?: string[] } & Record<string, unknown>;
 }
 
-export type FetchLike = (input: string, init?: { method?: string; headers?: Record<string, string>; body?: string }) => Promise<{
+export type FetchLike = (input: string, init?: { method?: string; headers?: Record<string, string>; body?: string; signal?: AbortSignal }) => Promise<{
   ok: boolean;
   status: number;
   json(): Promise<unknown>;
@@ -43,6 +43,12 @@ export interface OsvClientOptions {
   concurrency?: number;
   /** Shared cache of vulnerability details by id. */
   cache?: Map<string, OsvVulnerability>;
+  /** Give up on a request after this long. Default 30 000 ms. */
+  timeoutMs?: number;
+  /** Extra attempts after a network error, a timeout, HTTP 429 or a 5xx response. Default 2. */
+  retries?: number;
+  /** Wait before the first retry; doubles for each later one. Default 500 ms. */
+  retryDelayMs?: number;
 }
 
 interface BatchResponse {
@@ -56,6 +62,9 @@ export class OsvClient {
   private readonly fetchImpl: FetchLike;
   private readonly concurrency: number;
   private readonly cache: Map<string, OsvVulnerability>;
+  private readonly timeoutMs: number;
+  private readonly retries: number;
+  private readonly retryDelayMs: number;
 
   constructor(options: OsvClientOptions = {}) {
     this.baseUrl = (options.baseUrl ?? 'https://api.osv.dev').replace(/\/$/, '');
@@ -65,16 +74,33 @@ export class OsvClient {
     this.fetchImpl = f;
     this.concurrency = options.concurrency ?? 8;
     this.cache = options.cache ?? new Map();
+    this.timeoutMs = options.timeoutMs ?? 30_000;
+    this.retries = options.retries ?? 2;
+    this.retryDelayMs = options.retryDelayMs ?? 500;
   }
 
+  /** One request with a timeout, retried when the failure is likely to be temporary. */
   private async request<T>(path: string, body?: unknown): Promise<T> {
-    const res = await this.fetchImpl(`${this.baseUrl}${path}`, {
-      method: body ? 'POST' : 'GET',
-      headers: body ? { 'content-type': 'application/json' } : undefined,
-      body: body ? JSON.stringify(body) : undefined,
-    });
-    if (!res.ok) throw new Error(`OSV request ${path} failed with HTTP ${res.status}`);
-    return (await res.json()) as T;
+    let failure = new Error(`OSV request ${path} failed`);
+    for (let attempt = 0; attempt <= this.retries; attempt++) {
+      if (attempt) await new Promise((resolve) => setTimeout(resolve, this.retryDelayMs * 2 ** (attempt - 1)));
+      const signal = typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function' ? AbortSignal.timeout(this.timeoutMs) : undefined;
+      try {
+        const res = await this.fetchImpl(`${this.baseUrl}${path}`, {
+          method: body ? 'POST' : 'GET',
+          headers: body ? { 'content-type': 'application/json' } : undefined,
+          body: body ? JSON.stringify(body) : undefined,
+          signal,
+        });
+        if (res.ok) return (await res.json()) as T;
+        failure = new Error(`OSV request ${path} failed with HTTP ${res.status}`);
+        if (res.status !== 429 && res.status < 500) break; // a client error will not improve on retry
+      } catch (err) {
+        const reason = signal?.aborted ? `no response within ${this.timeoutMs} ms` : (err as Error).message;
+        failure = new Error(`OSV request ${path} failed: ${reason}`);
+      }
+    }
+    throw failure;
   }
 
   /** Returns the vulnerability ids affecting each dependency, in input order. */

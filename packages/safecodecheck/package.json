@@ -1,6 +1,6 @@
 {
   "name": "@devchecks/safecodecheck",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "AST-based detection of unsafe DOM insertion, dynamic code execution, insecure randomness and risky URL handling, with remediation guidance.",
   "keywords": [
     "security",
@@ -70,7 +70,7 @@
     ]
   },
   "dependencies": {
-    "@devchecks/core": "^0.1.0",
+    "@devchecks/core": "^0.2.0",
     "@babel/parser": "^7.26.0"
   }
 }

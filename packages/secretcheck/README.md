@@ -14,7 +14,7 @@ npx @devchecks/secretcheck install-hook    # add a .git/hooks/pre-commit that ru
 
 | Option | |
 |---|---|
-| `--fail-on high\|medium\|low` | lowest **confidence** that fails (default `high`) |
+| `--fail-on <severity>` | lowest severity that fails (default `critical`). See the table below. |
 | `--changed-lines` | only report lines added by this commit (handy when adopting in an old repo) |
 | `--baseline f` / `--update-baseline` | accept existing findings |
 | `-f text\|json\|sarif\|markdown`, `-o file`, `-c file` | shared devchecks options |
@@ -23,9 +23,13 @@ Exit code 1 means a blocking secret was found and the commit should stop. With h
 
 ## What it detects
 
-- **High confidence** (blocks by default): private key blocks, AWS access keys, GitHub/GitLab/npm/Slack/Stripe live/SendGrid/Google/Anthropic/OpenAI keys, Slack webhooks, and passwords inside connection strings (`postgres://user:pass@host`).
-- **Medium**: JWTs, Twilio keys, and hard-coded values assigned to sensitive names (`password = "..."`, `apiKey: '...'`).
-- **Low**: high-entropy quoted strings (Shannon entropy). They are reported but do not block.
+| Confidence | Severity | Blocks with | Examples |
+|---|---|---|---|
+| High | `critical` | the default `--fail-on critical` | private key blocks, AWS access keys, GitHub/GitLab/npm/Slack/Stripe live/SendGrid/Google/Anthropic/OpenAI keys, Slack webhooks, passwords inside connection strings (`postgres://user:pass@host`) |
+| Medium | `high` | `--fail-on high` | JWTs, Twilio keys, hard-coded values assigned to sensitive names in code (`password = "..."`, `apiKey: '...'`) and unquoted ones in `.env`, YAML, TOML, INI and `.properties` files (`DB_PASSWORD=...`, `password: ...`) |
+| Low | `medium` | `--fail-on medium` | high-entropy quoted strings (Shannon entropy) |
+
+`--fail-on` takes a severity, the same as every other devchecks tool. Before 0.2.0 it took a confidence level: `"failOn": "high"` used to mean high confidence only, which is now `"critical"`.
 
 Placeholders (`changeme`, `<your-key>`, `${VAR}`, `process.env.X`, AWS `...EXAMPLE` keys) are ignored.
 
@@ -38,7 +42,7 @@ Skipped by default: `node_modules`, `dist`, `build`, `coverage`, `vendor`, `*.mi
   "failOn": "high",
   "exclude": ["docs/**"],
   "disableRules": ["jwt"],
-  "customRules": [{ "id": "acme-key", "pattern": "(?<secret>acme_live_[a-z0-9]{24})", "confidence": "high" }],
+  "customRules": [{ "id": "acme-key", "pattern": "(?<secret>acme_live_[a-z0-9]{24})", "confidence": "high", "files": ["**/*.ts"] }],
   "entropy": { "minLength": 24 },
   "allowlist": {
     "paths": ["test/fixtures/**"],
@@ -60,6 +64,6 @@ const result = scanStaged({ changedLinesOnly: true });
 if (result.blocking.length) process.exit(1);
 ```
 
-CDN: `https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/secretcheck.min.js` → `SecretCheck.scanText(text, 'file.js')`.
+CDN: `https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/secretcheck.min.js` → `SecretCheck.scanText(text, 'file.js')`.
 
 A detected secret must be treated as leaked: **rotate it**. Deleting it from the commit is not enough.

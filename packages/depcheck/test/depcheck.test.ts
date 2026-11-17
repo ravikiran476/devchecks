@@ -1,16 +1,22 @@
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
+  OsvClient,
   checkLockfile,
   compareSemver,
   cvss3BaseScore,
   fixedVersionFor,
   fromNpmAudit,
+  lockfileHasDevInfo,
   parsePackageLock,
   parsePnpmLock,
   parseYarnLock,
   type FetchLike,
   type OsvVulnerability,
 } from '../src/index.js';
+import { checkProject } from '../src/node.js';
 
 const packageLock = JSON.stringify({
   name: 'app',
@@ -111,6 +117,24 @@ describe('lockfile parsers', () => {
   it('reads yarn classic and berry lockfiles', () => {
     expect(parseYarnLock(yarnV1).map((d) => `${d.name}@${d.version}`)).toEqual(['@babel/code-frame@7.12.13', 'lodash@4.17.20']);
     expect(parseYarnLock(yarnBerry).map((d) => `${d.name}@${d.version}`)).toEqual(['lodash@4.17.21']);
+  });
+
+  it('resolves aliases to the package that is really installed', () => {
+    const aliased = `"my-lodash@npm:lodash@4.17.20":
+  version: 4.17.20
+  resolution: "lodash@npm:4.17.20"
+
+"scoped-alias@npm:@scope/pkg@^1.0.0":
+  version: 1.2.3
+`;
+    expect(parseYarnLock(aliased).map((d) => `${d.name}@${d.version}`)).toEqual(['lodash@4.17.20', '@scope/pkg@1.2.3']);
+  });
+
+  it('knows which lockfiles can tell development packages apart', () => {
+    expect(lockfileHasDevInfo('package-lock', parsePackageLock(packageLock))).toBe(true);
+    expect(lockfileHasDevInfo('pnpm', parsePnpmLock(pnpm6))).toBe(true);
+    expect(lockfileHasDevInfo('pnpm', parsePnpmLock(pnpm9))).toBe(false);
+    expect(lockfileHasDevInfo('yarn', parseYarnLock(yarnV1))).toBe(false);
   });
 
   it('reads pnpm v6 and v9 lockfiles', () => {
@@ -225,6 +249,53 @@ describe('checkLockfile', () => {
   it('returns no fixed version when none is published', () => {
     const v: OsvVulnerability = { id: 'X', affected: [{ package: { name: 'a', ecosystem: 'npm' }, ranges: [{ type: 'SEMVER', events: [{ introduced: '0' }] }] }] };
     expect(fixedVersionFor({ name: 'a', version: '1.0.0', ecosystem: 'npm' }, v)).toBeUndefined();
+  });
+});
+
+describe('OsvClient', () => {
+  const ok = (body: unknown) => ({ ok: true, status: 200, json: async () => body });
+  const dep = [{ name: 'lodash', version: '4.17.20', ecosystem: 'npm' as const }];
+
+  it('retries temporary failures and gives up on client errors', async () => {
+    let calls = 0;
+    const flaky: FetchLike = async () => (++calls < 3 ? { ok: false, status: 503, json: async () => ({}) } : ok({ results: [{ vulns: [{ id: 'X-1' }] }] }));
+    expect(await new OsvClient({ fetch: flaky, retryDelayMs: 1 }).queryIds(dep)).toEqual([['X-1']]);
+    expect(calls).toBe(3);
+
+    calls = 0;
+    const broken: FetchLike = async () => (calls++, { ok: false, status: 400, json: async () => ({}) });
+    await expect(new OsvClient({ fetch: broken, retryDelayMs: 1 }).queryIds(dep)).rejects.toThrow('HTTP 400');
+    expect(calls).toBe(1);
+
+    calls = 0;
+    const down: FetchLike = async () => {
+      calls++;
+      throw new Error('getaddrinfo ENOTFOUND api.osv.dev');
+    };
+    await expect(new OsvClient({ fetch: down, retries: 1, retryDelayMs: 1 }).queryIds(dep)).rejects.toThrow('ENOTFOUND');
+    expect(calls).toBe(2);
+  });
+
+  it('times out a request that never answers', async () => {
+    const hung: FetchLike = (_url, init) => new Promise((_resolve, reject) => init?.signal?.addEventListener('abort', () => reject(new Error('aborted'))));
+    await expect(new OsvClient({ fetch: hung, timeoutMs: 30, retries: 0 }).queryIds(dep)).rejects.toThrow('no response within 30 ms');
+  });
+});
+
+describe('checkProject', () => {
+  it('says so when --production cannot be honoured', async () => {
+    const { fetch } = mockFetch({});
+    const yarnDir = mkdtempSync(join(tmpdir(), 'depcheck-'));
+    writeFileSync(join(yarnDir, 'yarn.lock'), yarnV1);
+    const yarn = await checkProject(yarnDir, { production: true, fetch });
+    expect(yarn.dependencies).toHaveLength(2);
+    expect(yarn.notes).toHaveLength(1);
+    expect(yarn.notes[0]).toMatch(/--production had no effect: yarn\.lock .* all 2 package versions were checked/);
+    expect((await checkProject(yarnDir, { fetch })).notes).toEqual([]);
+
+    const npmDir = mkdtempSync(join(tmpdir(), 'depcheck-'));
+    writeFileSync(join(npmDir, 'package-lock.json'), packageLock);
+    expect((await checkProject(npmDir, { production: true, fetch })).notes).toEqual([]);
   });
 });
 

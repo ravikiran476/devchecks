@@ -1,7 +1,7 @@
 {
   "name": "devchecks",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A family of small, independently published code-quality and security checkers usable from npm, a CLI, or a CDN.",
   "type": "module",
   "license": "MIT",
@@ -28,6 +28,7 @@
     "test:watch": "vitest",
     "check": "npm run typecheck && npm test && npm run build",
     "cdn": "npm run build && node scripts/cdn.mjs",
+    "bump": "node scripts/bump.mjs",
     "release": "npm run check && node scripts/publish.mjs"
   },
   "devDependencies": {

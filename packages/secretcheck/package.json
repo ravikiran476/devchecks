@@ -1,6 +1,6 @@
 {
   "name": "@devchecks/secretcheck",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Detect credentials and high-entropy secrets in staged Git content before they are committed. Secrets are never printed in full.",
   "keywords": [
     "secrets",
@@ -64,6 +64,6 @@
     ]
   },
   "dependencies": {
-    "@devchecks/core": "^0.1.0"
+    "@devchecks/core": "^0.2.0"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@devchecks/licensecheck",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Dependency license inventory and policy checks with SPDX expressions: deny/allow lists, copyleft and unknown licenses, and third-party attribution files.",
   "keywords": [
     "license",
@@ -65,6 +65,6 @@
     ]
   },
   "dependencies": {
-    "@devchecks/core": "^0.1.0"
+    "@devchecks/core": "^0.2.0"
   }
 }

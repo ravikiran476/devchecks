@@ -1,6 +1,6 @@
 {
   "name": "@devchecks/apicontractcheck",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Check APIs against their OpenAPI contract: validate real responses (live, HAR files or a fetch wrapper) and detect breaking changes between spec versions.",
   "keywords": [
     "openapi",
@@ -65,7 +65,7 @@
     ]
   },
   "dependencies": {
-    "@devchecks/core": "^0.1.0",
+    "@devchecks/core": "^0.2.0",
     "yaml": "^2.6.0"
   }
 }

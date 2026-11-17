@@ -59,7 +59,10 @@ export function parsePackageLock(text: string): Dependency[] {
 function nameFromSpec(spec: string): string {
   const s = spec.trim().replace(/^"|"$/g, '');
   const at = s.indexOf('@', 1);
-  return at === -1 ? s : s.slice(0, at);
+  if (at === -1) return s;
+  // An alias ("my-lodash@npm:lodash@4.17.20") installs the package named after "npm:".
+  const aliased = /^npm:((?:@[^/@]+\/)?[^/@]+)@/.exec(s.slice(at + 1));
+  return aliased ? aliased[1]! : s.slice(0, at);
 }
 
 /** yarn.lock for Yarn classic (v1) and Yarn Berry (v2+). */
@@ -159,6 +162,14 @@ export function detectLockfileKind(filename: string, text: string): LockfileKind
   if (t.startsWith('{')) return /"lockfileVersion"/.test(t) ? 'package-lock' : 'npm-ls';
   if (/^lockfileVersion:/m.test(t)) return 'pnpm';
   return 'yarn';
+}
+
+/**
+ * False when the lockfile does not record which packages are development-only (yarn.lock,
+ * pnpm-lock.yaml v9), so a production-only filter has nothing to go on.
+ */
+export function lockfileHasDevInfo(kind: LockfileKind, deps: Dependency[]): boolean {
+  return kind === 'package-lock' || deps.some((d) => d.dev);
 }
 
 export function parseLockfile(filename: string, text: string): Dependency[] {

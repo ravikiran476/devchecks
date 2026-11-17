@@ -2,7 +2,7 @@
 import { createReport, type BaselineDiff, type Report } from '@devchecks/core';
 import type { SecretFinding } from './scan.js';
 
-export { BUILTIN_RULES, isPlaceholder, type Confidence, type SecretRule } from './rules.js';
+export { BUILTIN_RULES, CONFIG_FILES, CONFIDENCE_SEVERITY, isPlaceholder, type Confidence, type SecretRule } from './rules.js';
 export { isHighEntropy, shannonEntropy, type EntropyOptions } from './entropy.js';
 export {
   DEFAULT_EXCLUDES,

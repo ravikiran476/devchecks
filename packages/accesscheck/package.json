@@ -1,6 +1,6 @@
 {
   "name": "@devchecks/accesscheck",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Accessibility checks powered by axe-core: scan pages in the browser or local dev URLs with Playwright, with selectors, suggested fixes and baselines.",
   "keywords": [
     "accessibility",
@@ -64,7 +64,7 @@
     ]
   },
   "dependencies": {
-    "@devchecks/core": "^0.1.0",
+    "@devchecks/core": "^0.2.0",
     "axe-core": "^4.10.0"
   },
   "peerDependencies": {

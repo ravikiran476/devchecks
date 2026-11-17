@@ -71,6 +71,16 @@ function maskPan(pan: string): string {
   return `${pan.slice(0, 6)}${'*'.repeat(pan.length - 10)}${pan.slice(-4)}`;
 }
 
+const PAN_SHAPED = /(?<![\d.])(\d{13,19}|\d{4}(?:[ -]\d{4}){3})(?![\d.])/g;
+
+/** Masks every card-number-shaped value in a line, so a report never repeats a PAN it found. */
+export function maskPans(text: string): string {
+  return text.replace(PAN_SHAPED, (match) => {
+    const digits = match.replace(/[ -]/g, '');
+    return luhn(digits) ? maskPan(digits) : match;
+  });
+}
+
 /** Looks for card fields flowing into storage, logs, analytics and insecure transport, plus hard-coded PANs. */
 export function scanSourceForCardData(source: string, file: string): Finding[] {
   const findings: Finding[] = [];
@@ -81,7 +91,7 @@ export function scanSourceForCardData(source: string, file: string): Finding[] {
       for (const sink of SINKS) {
         if (!sink.re.test(line)) continue;
         const sad = SAD_TERMS.test(line);
-        const snippet = line.trim().slice(0, 160);
+        const snippet = maskPans(line).trim().slice(0, 160);
         findings.push({
           fingerprint: fingerprint('pci-pagecheck', sink.id, file, snippet),
           ruleId: sink.id,
@@ -94,7 +104,7 @@ export function scanSourceForCardData(source: string, file: string): Finding[] {
         });
       }
     }
-    for (const m of line.matchAll(/(?<![\d.])(\d{13,19}|\d{4}(?:[ -]\d{4}){3})(?![\d.])/g)) {
+    for (const m of line.matchAll(PAN_SHAPED)) {
       const pan = m[1]!.replace(/[ -]/g, '');
       if (pan.length < 13 || !luhn(pan) || TEST_PANS.has(pan) || /^(\d)\1+$/.test(pan) || !/^[2-6]/.test(pan)) continue;
       findings.push({
@@ -103,7 +113,8 @@ export function scanSourceForCardData(source: string, file: string): Finding[] {
         severity: 'high',
         message: `Hard-coded value that looks like a real card number (${maskPan(pan)}).`,
         location: { file, line: i + 1, column: (m.index ?? 0) + 1 },
-        snippet: line.replace(m[1]!, maskPan(pan)).trim().slice(0, 160),
+        // Mask every number on the line: a second PAN must not ride along in this finding's snippet.
+        snippet: maskPans(line).trim().slice(0, 160),
         remediation: "Remove it. Use your payment provider's documented test card numbers in test code.",
         meta: { controls: ['3.5.1'] },
       });

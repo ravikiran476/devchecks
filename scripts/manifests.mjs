@@ -1,5 +1,9 @@
-// One-off generator for package manifests, kept so the packages stay consistent.
-import { writeFileSync } from 'node:fs';
+// Generator for the tool package manifests, kept so the packages stay consistent.
+// The version comes from the root package.json (set it with `npm run bump -- <version>`),
+// so running this again never moves a package back to an older version.
+import { readFileSync, writeFileSync } from 'node:fs';
+
+const { version } = JSON.parse(readFileSync('package.json', 'utf8'));
 
 const pkgs = [
   { dir: 'accesscheck', name: 'accesscheck', global: 'AccessCheck', desc: 'Accessibility checks powered by axe-core: scan pages in the browser or local dev URLs with Playwright, with selectors, suggested fixes and baselines.', deps: { 'axe-core': '^4.10.0' }, peer: { playwright: '>=1.40.0' }, kw: ['accessibility', 'a11y', 'wcag', 'axe-core', 'playwright'] },
@@ -18,7 +22,7 @@ for (const p of pkgs) {
   const node = { types: './dist/types/node.d.ts', default: './dist/node.js' };
   const manifest = {
     name: `@devchecks/${p.name}`,
-    version: '0.1.0',
+    version,
     description: p.desc,
     keywords: p.kw,
     type: 'module',
@@ -46,7 +50,7 @@ for (const p of pkgs) {
     engines: { node: '>=20' },
     scripts: { build: 'node ../../scripts/build.mjs' },
     devchecks: { global: p.global, cdn: p.cdn ?? p.name, node: ['src/node.ts', 'src/cli.ts', ...Object.values(p.extra ?? {}).map((f) => `src/${f}.ts`)] },
-    dependencies: { '@devchecks/core': '^0.1.0', ...(p.deps ?? {}) },
+    dependencies: { '@devchecks/core': `^${version}`, ...(p.deps ?? {}) },
     ...(p.peer ? { peerDependencies: p.peer, peerDependenciesMeta: Object.fromEntries(Object.keys(p.peer).map((k) => [k, { optional: true }])) } : {}),
   };
   writeFileSync(`packages/${p.dir}/package.json`, JSON.stringify(manifest, null, 2) + '\n');

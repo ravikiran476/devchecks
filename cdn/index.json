@@ -1,82 +1,102 @@
 [
   {
     "name": "@devchecks/accesscheck",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "global": "AccessCheck",
     "script": "accesscheck.min.js",
+    "scriptIntegrity": "sha384-JlDlnfau0L7U2RAemvsKXmzgjZ78q0Qb6bZ0gNiI43Wm9IwqdQS2Sph++b977hUz",
     "module": "accesscheck.esm.js",
+    "moduleIntegrity": "sha384-1qiNHUkeapFyOKKRiBCDwHIEdLYiICwhkG/KH/f6dnPu6CdgD4H/Rn4rk4wewuVV",
     "description": "Accessibility checks powered by axe-core: scan pages in the browser or local dev URLs with Playwright, with selectors, suggested fixes and baselines."
   },
   {
     "name": "@devchecks/apicontractcheck",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "global": "APIContractCheck",
     "script": "apicontractcheck.min.js",
+    "scriptIntegrity": "sha384-qrHDxY9xmfCo1FSSbokHMgMwTixbjq6Wjjun9MS77FB/N24zPEQ2hlUzSY6jUx5g",
     "module": "apicontractcheck.esm.js",
+    "moduleIntegrity": "sha384-imdqNMubznwqMvJmT68/GWzjoNce+8LiSQpK4yzW8AQxJogHK/S3vy7kvrqBcs0q",
     "description": "Check APIs against their OpenAPI contract: validate real responses (live, HAR files or a fetch wrapper) and detect breaking changes between spec versions."
   },
   {
     "name": "@devchecks/archcheck",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "global": "ArchCheck",
     "script": "archcheck.min.js",
+    "scriptIntegrity": "sha384-YakYfMwftoHssxpF4GUHYtBXUBq4uqGwXaQTbZgR6Hnne7LJA1imP12FVLCexZlu",
     "module": "archcheck.esm.js",
+    "moduleIntegrity": "sha384-3N77K7gLZ7jtNhZ3kGkvHJqKl4Qr3mfepWSH5/Ug7tOA5WI8INiCo9ATUX0YCzID",
     "description": "Enforce architecture in JS/TS, React, Vue and Node projects: circular imports, layer rules, restricted modules and module boundaries."
   },
   {
     "name": "@devchecks/configcheck",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "global": "ConfigCheck",
     "script": "configcheck.min.js",
+    "scriptIntegrity": "sha384-8MAHttR5LQ+YOdd4PNcILWxFM138O9op2Ou/j4vUjS/gbx2Do8LFuIVT80HCXqK8",
     "module": "configcheck.esm.js",
+    "moduleIntegrity": "sha384-PJ+w855c8Lb/5bkGpq3jbWhmokz0dcLQ1D/tCq4QkzzpmHEnElDTuwxfToVO12OT",
     "description": "Validate configuration: .env drift against .env.example, required and typed variables, JSON/YAML syntax, and risky settings such as debug mode, CORS wildcards and disabled TLS verification."
   },
   {
     "name": "@devchecks/depcheck",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "global": "DepCheck",
     "script": "depcheck.min.js",
+    "scriptIntegrity": "sha384-OchzRDwks7eMXEBI2GqXmZxUvsovWluRrSEK6i7VE8rRDidIPgy3Puh/6VGkX30N",
     "module": "depcheck.esm.js",
+    "moduleIntegrity": "sha384-6eWfbbEIkpLyXKyguv25HvIE6SXwn01usxAaY3N7i+pURsvC58pq7Bo3lQmsl2Ns",
     "description": "Check npm, Yarn and pnpm lockfiles or installed trees against the OSV vulnerability database, with fixed-version guidance and severity thresholds."
   },
   {
     "name": "@devchecks/licensecheck",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "global": "LicenseCheck",
     "script": "licensecheck.min.js",
+    "scriptIntegrity": "sha384-+xddisLpeWxR3CU/KGxDhTJP1apUhbkMsMsZMuRys5ESU6kNa7VhNHU2iljkl0Hg",
     "module": "licensecheck.esm.js",
+    "moduleIntegrity": "sha384-Ptb/aicS47ftPVN7UC3JVpG4jdG85eEVt0Hr4D6Oj/Ggn0iIi3SCOXqQiRKnVnma",
     "description": "Dependency license inventory and policy checks with SPDX expressions: deny/allow lists, copyleft and unknown licenses, and third-party attribution files."
   },
   {
     "name": "@devchecks/pci-pagecheck",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "global": "PCIPageCheck",
     "script": "pci-pagecheck.min.js",
+    "scriptIntegrity": "sha384-W5u+Ywql/tbw4SS5ItIYxPc+UirxFf3R03u4q2SFWGldE+5vim/AlSLolmCbF4TA",
     "module": "pci-pagecheck.esm.js",
+    "moduleIntegrity": "sha384-7XJ2bKvJ+jRxwPW1AetgIaWD8HLg5u3IgoM71tTGkZSzF5MjXScZwzhS9+d8WVEC",
     "description": "PCI DSS readiness aid for payment pages: script inventory against an approved baseline, CSP review, card-data exposure checks and control-mapped evidence."
   },
   {
     "name": "@devchecks/perfcheck",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "global": "PerfCheck",
     "script": "perfcheck.min.js",
+    "scriptIntegrity": "sha384-N/sCn1IZL1ApGo/PtAfqtB1L+F618ox191hmC+xPTNboBOQkeXTKKwKklQ1Sx9am",
     "module": "perfcheck.esm.js",
+    "moduleIntegrity": "sha384-uXjy8harcpJ1wUngGCONKx+ZLPN2Rn05iJ8SOpB0k7o1BhXQXs7cCiyvFhXPUPFs",
     "description": "Performance budgets: Core Web Vitals and resource weight in the browser, bundle size budgets (gzip/brotli) and Playwright lab runs in CI."
   },
   {
     "name": "@devchecks/safecodecheck",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "global": "SafeCodeCheck",
     "script": "safecodecheck.min.js",
+    "scriptIntegrity": "sha384-vLgjeKoIeoaoIPANSLowx05VJpbdmdItSb+PghoOyDrCzYAUBnppKi+qVtlG6NBJ",
     "module": "safecodecheck.esm.js",
+    "moduleIntegrity": "sha384-zNo4qBzt5J6sAFsQ0drL9Yovn8V/tqbbF0AlwKAWrQD2/s54bBFI08LgfSryOZBZ",
     "description": "AST-based detection of unsafe DOM insertion, dynamic code execution, insecure randomness and risky URL handling, with remediation guidance."
   },
   {
     "name": "@devchecks/secretcheck",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "global": "SecretCheck",
     "script": "secretcheck.min.js",
+    "scriptIntegrity": "sha384-iI/0MLExdXoMJ4I0Dl8VPwVNZKsD8TLAAV715M5f3AFy4RqI8BHC8nqW1GHx4Y6D",
     "module": "secretcheck.esm.js",
+    "moduleIntegrity": "sha384-QkZoyGI1q/SZ9gU1l0CNMZdzCgrjMniDOt0yyVszMiAqiO6FisCKZ3/qFvMhufI8",
     "description": "Detect credentials and high-entropy secrets in staged Git content before they are committed. Secrets are never printed in full."
   }
 ]

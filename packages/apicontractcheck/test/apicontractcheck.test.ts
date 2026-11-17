@@ -166,7 +166,43 @@ describe('HAR and fetch integration', () => {
     const f = createValidatingFetch(spec, { fetch: fakeFetch, onFinding: (x) => seen.push(x.message) });
     const res = await f('https://api.shop.test/v1/users/me');
     expect((await res.json()).email).toBe('bad');
+    await f.flush();
     expect(seen).toEqual(['GET /users/me 200: /email must be a valid email.']);
+  });
+
+  it('hands the response back before the body has finished, and never buffers streams', async () => {
+    const seen: string[] = [];
+    const encoder = new TextEncoder();
+    let finishJson!: () => void;
+    const slowJson = new ReadableStream<Uint8Array>({
+      start(controller) {
+        finishJson = () => {
+          controller.enqueue(encoder.encode(JSON.stringify({ ...user, email: 'bad' })));
+          controller.close();
+        };
+      },
+    });
+    const endless = new ReadableStream<Uint8Array>({ start: (controller) => controller.enqueue(encoder.encode('data: tick\n\n')) });
+    const fakeFetch = (async (input: RequestInfo | URL) =>
+      String(input).endsWith('/events')
+        ? new Response(endless, { status: 200, headers: { 'content-type': 'text/event-stream' } })
+        : new Response(slowJson, { status: 200, headers: { 'content-type': 'application/json' } })) as typeof fetch;
+    const f = createValidatingFetch(spec, { fetch: fakeFetch, ignoreUnknownPaths: true, onFinding: (x) => seen.push(x.message) });
+    const timeout = <T>(p: Promise<T>) => Promise.race([p, new Promise<'timed out'>((r) => setTimeout(() => r('timed out'), 500))]);
+
+    // An endless event stream: the caller gets the response, and flush() does not wait on the stream.
+    const events = await timeout(f('https://api.shop.test/v1/events'));
+    expect(events).toBeInstanceOf(Response);
+    expect(await timeout(f.flush())).toBeUndefined();
+
+    // A JSON body that is still arriving: the response is returned first, validated when it completes.
+    const res = await timeout(f('https://api.shop.test/v1/users/me'));
+    expect(res).toBeInstanceOf(Response);
+    expect(seen).toEqual([]);
+    finishJson();
+    await f.flush();
+    expect(seen).toEqual(['GET /users/me 200: /email must be a valid email.']);
+    expect(((await (res as Response).json()) as { email: string }).email).toBe('bad');
   });
 });
 

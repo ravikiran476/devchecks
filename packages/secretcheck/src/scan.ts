@@ -1,4 +1,4 @@
-import { fingerprint, matchAny, normalizePath, type Finding } from '@devchecks/core';
+import { fingerprint, matchAny, meetsThreshold, normalizePath, parseSeverity, type Finding, type Severity } from '@devchecks/core';
 import { DEFAULT_ENTROPY, isHighEntropy, type EntropyOptions } from './entropy.js';
 import { BUILTIN_RULES, CONFIDENCE_SEVERITY, ROTATE_ADVICE, type Confidence, type SecretRule } from './rules.js';
 
@@ -9,6 +9,8 @@ export interface CustomRuleConfig {
   pattern: string;
   flags?: string;
   confidence?: Confidence;
+  /** Glob patterns of the files the rule applies to. Default: every file. */
+  files?: string[];
 }
 
 export interface SecretCheckConfig {
@@ -29,8 +31,12 @@ export interface SecretCheckConfig {
     /** Finding fingerprints that were reviewed and accepted. */
     fingerprints?: string[];
   };
-  /** Lowest confidence that blocks a commit. Default "high". */
-  failOn?: Confidence;
+  /**
+   * Lowest severity that blocks a commit, as in every other devchecks tool. Default "critical",
+   * which is a high-confidence match. "high" also blocks medium-confidence findings such as
+   * hard-coded passwords, and "medium" blocks high-entropy strings too.
+   */
+  failOn?: Severity;
   /** Files larger than this many bytes are skipped. Default 1 MiB. */
   maxFileSize?: number;
 }
@@ -74,7 +80,7 @@ export interface SecretFinding extends Finding {
 
 export interface ScanResult {
   findings: SecretFinding[];
-  /** Findings at or above the failOn confidence — these should block the commit. */
+  /** Findings at or above the failOn severity — these should block the commit. */
   blocking: SecretFinding[];
   skipped: Array<{ file: string; reason: string }>;
 }
@@ -96,6 +102,7 @@ export function compileRules(config: SecretCheckConfig = {}): SecretRule[] {
       description: c.description ?? c.id,
       pattern: new RegExp(c.pattern, [...flags].join('')),
       confidence: c.confidence ?? 'medium',
+      files: c.files?.length ? c.files : undefined,
     });
   }
   return rules;
@@ -182,6 +189,7 @@ export function scanText(
   const allowFingerprints = new Set(config.allowlist?.fingerprints ?? []);
   const path = normalizePath(file);
   if (matchAny(config.allowlist?.paths, path)) return [];
+  const fileRules = rules.filter((r) => !r.files || matchAny(r.files, path));
 
   const findings: SecretFinding[] = [];
   const lines = content.split(/\r?\n/);
@@ -189,7 +197,7 @@ export function scanText(
     const line = lines[i]!;
     if (onlyLines && !onlyLines.has(i + 1)) continue;
     if (ALLOW_LINE.test(line) || (i > 0 && ALLOW_NEXT.test(lines[i - 1]!))) continue;
-    const candidates = findCandidates(line, rules, entropy).filter(
+    const candidates = findCandidates(line, fileRules, entropy).filter(
       (c) => !allowPatterns.some((re) => re.test(c.secret) || re.test(line)),
     );
     if (!candidates.length) continue;
@@ -213,8 +221,9 @@ export function scanText(
   return findings;
 }
 
-export function isBlocking(f: SecretFinding, failOn: Confidence = 'high'): boolean {
-  return CONF_RANK[f.meta.confidence] >= CONF_RANK[failOn];
+/** True when the finding is at or above `failOn`. The default blocks high-confidence matches only. */
+export function isBlocking(f: SecretFinding, failOn: Severity | string = 'critical'): boolean {
+  return meetsThreshold(f.severity, parseSeverity(failOn));
 }
 
 /** Scans several in-memory files, applying excludes, size limits and generated-file detection. */

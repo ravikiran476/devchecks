@@ -86,6 +86,6 @@ export function mapAxeResults(results: AxeResults, options: MapOptions = {}): Fi
   return findings;
 }
 
-export function toReport(findings: Finding[], baseline?: BaselineDiff): Report {
-  return createReport(TOOL, VERSION, findings, { baseline, notes: [LIMITATIONS] });
+export function toReport(findings: Finding[], baseline?: BaselineDiff, notes: string[] = []): Report {
+  return createReport(TOOL, VERSION, findings, { baseline, notes: [LIMITATIONS, ...notes] });
 }

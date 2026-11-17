@@ -1,6 +1,6 @@
 {
   "name": "@devchecks/core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Shared finding model, baselines and reporters (text, JSON, SARIF, Markdown) for the devchecks family.",
   "type": "module",
   "license": "MIT",

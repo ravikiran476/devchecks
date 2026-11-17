@@ -1,6 +1,6 @@
 {
   "name": "@devchecks/pci-pagecheck",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "PCI DSS readiness aid for payment pages: script inventory against an approved baseline, CSP review, card-data exposure checks and control-mapped evidence.",
   "keywords": [
     "pci",
@@ -65,7 +65,7 @@
     ]
   },
   "dependencies": {
-    "@devchecks/core": "^0.1.0"
+    "@devchecks/core": "^0.2.0"
   },
   "peerDependencies": {
     "playwright": ">=1.40.0"

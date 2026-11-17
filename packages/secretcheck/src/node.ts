@@ -22,6 +22,15 @@ export function scanStaged(options: StagedScanOptions = {}): ScanResult & { file
   const wanted = paths.filter((p) => !isExcluded(p, config));
   const blobs = readStagedBlobs(root, wanted);
   const added = options.changedLinesOnly ? stagedAddedLines(root) : undefined;
+  if (added) {
+    // A diff path that is not a staged path means the diff was parsed wrongly. Stop rather
+    // than report "no secrets" for lines that were never looked at.
+    const staged = new Set(paths);
+    const unknown = [...added.keys()].filter((p) => !staged.has(p));
+    if (unknown.length) {
+      throw new Error(`Could not match the staged diff to staged files (${unknown.slice(0, 3).join(', ')}). Run without --changed-lines.`);
+    }
+  }
   const files = wanted.flatMap((p) => {
     const blob = blobs.get(p);
     if (!blob) return [];

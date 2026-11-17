@@ -29,7 +29,7 @@ Diff rules: `endpoint-removed`, `required-parameter-added`, `request-body-requir
 ## Browser / CDN
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/apicontractcheck.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/apicontractcheck.min.js" integrity="sha384-qrHDxY9xmfCo1FSSbokHMgMwTixbjq6Wjjun9MS77FB/N24zPEQ2hlUzSY6jUx5g" crossorigin="anonymous"></script>
 <script>
   fetch('/openapi.json').then((r) => r.json()).then((spec) => {
     window.fetch = APIContractCheck.createValidatingFetch(spec, { onFinding: (f) => console.warn(f.message) });

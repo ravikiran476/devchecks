@@ -62,6 +62,7 @@ runCli(async () => {
   const minSeverity = parseSeverity(values['min-severity'] ?? config.minSeverity ?? 'low');
 
   let findings: Finding[];
+  let notes: string[] = [];
   if (values['npm-audit']) {
     findings = fromNpmAudit(readFileSync(values['npm-audit'], 'utf8'));
   } else {
@@ -72,7 +73,9 @@ runCli(async () => {
       ignore: config.ignore,
     });
     findings = result.findings;
+    notes = result.notes;
     console.error(`${TOOL}: checked ${result.dependencies.length} package versions from ${result.source}`);
+    for (const note of notes) console.error(`${TOOL}: warning: ${note}`);
   }
   findings = filterBySeverity(findings, minSeverity);
 
@@ -86,7 +89,7 @@ runCli(async () => {
   const diff = diffBaseline(findings, loadBaselineFile(values.baseline));
   const report = values['npm-audit']
     ? createReport(TOOL, VERSION, diff.newFindings, { baseline: values.baseline ? diff : undefined })
-    : toReport(diff.newFindings as Parameters<typeof toReport>[0], values.baseline ? diff : undefined);
+    : toReport(diff.newFindings as Parameters<typeof toReport>[0], values.baseline ? diff : undefined, notes);
   writeOutput(formatReport(report, format, { color: useColor() && !values.output }), values.output);
   return diff.newFindings.some((f) => meetsThreshold(f.severity, failOn)) ? 1 : 0;
 });

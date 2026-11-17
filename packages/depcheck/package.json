@@ -1,6 +1,6 @@
 {
   "name": "@devchecks/depcheck",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Check npm, Yarn and pnpm lockfiles or installed trees against the OSV vulnerability database, with fixed-version guidance and severity thresholds.",
   "keywords": [
     "vulnerabilities",
@@ -65,6 +65,6 @@
     ]
   },
   "dependencies": {
-    "@devchecks/core": "^0.1.0"
+    "@devchecks/core": "^0.2.0"
   }
 }

@@ -16,10 +16,10 @@ A readiness aid for payment pages. It:
 npm i -D @devchecks/pci-pagecheck playwright && npx playwright install chromium
 
 # 1. Record the current scripts as the approved baseline, then add justifications and approvers
-npx pci-pagecheck approve https://staging.shop.example/checkout -b pci-scripts.json
+npx @devchecks/pci-pagecheck approve https://staging.shop.example/checkout -b pci-scripts.json
 
 # 2. Check (in CI, or on a schedule for 11.6.1 change detection)
-npx pci-pagecheck https://staging.shop.example/checkout -b pci-scripts.json \
+npx @devchecks/pci-pagecheck https://staging.shop.example/checkout -b pci-scripts.json \
   --source src/checkout --evidence pci-evidence.md --fail-on high
 ```
 
@@ -29,12 +29,14 @@ Options: `--first-party <origins>`, `--payment-origin <origins>` (allowed card f
 
 A changed hash on an approved script is reported as **critical** (`script-integrity-changed`). Treat it as possible skimming until someone explains it.
 
+Card numbers found in source are always masked in reports (`453201******0366`), including any other number on the same line.
+
 ## Browser / CDN
 
 Run it on a staging copy of the page:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/pci-pagecheck.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/pci-pagecheck.min.js" integrity="sha384-W5u+Ywql/tbw4SS5ItIYxPc+UirxFf3R03u4q2SFWGldE+5vim/AlSLolmCbF4TA" crossorigin="anonymous"></script>
 <script>
   PCIPageCheck.check({ baseline }).then((r) => {
     console.table(r.inventory);

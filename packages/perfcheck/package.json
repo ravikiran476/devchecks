@@ -1,6 +1,6 @@
 {
   "name": "@devchecks/perfcheck",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Performance budgets: Core Web Vitals and resource weight in the browser, bundle size budgets (gzip/brotli) and Playwright lab runs in CI.",
   "keywords": [
     "performance",
@@ -66,7 +66,7 @@
     ]
   },
   "dependencies": {
-    "@devchecks/core": "^0.1.0"
+    "@devchecks/core": "^0.2.0"
   },
   "peerDependencies": {
     "playwright": ">=1.40.0"

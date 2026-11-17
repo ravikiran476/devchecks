@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { parseArgs } from 'node:util';
-import { diffBaseline, formatReport, OUTPUT_FORMATS, type OutputFormat } from '@devchecks/core';
+import { diffBaseline, formatReport, OUTPUT_FORMATS, parseSeverity, type OutputFormat } from '@devchecks/core';
 import { loadBaselineFile, loadConfig, runCli, saveBaselineFile, useColor, writeOutput } from '@devchecks/core/node';
-import { installHook, scanPaths, scanStaged, toReport, TOOL, VERSION, isBlocking, type Confidence, type SecretCheckConfig, type SecretFinding } from './node.js';
+import { installHook, scanPaths, scanStaged, toReport, TOOL, VERSION, isBlocking, type SecretCheckConfig, type SecretFinding } from './node.js';
 
 const HELP = `secretcheck ${VERSION} - find credentials before they are committed
 
@@ -15,7 +15,9 @@ Options:
   -c, --config <file>       Config file (default .secretcheckrc.json)
   -f, --format <fmt>        text | json | sarif | markdown (default text)
   -o, --output <file>       Write the report to a file
-      --fail-on <level>     high | medium | low confidence that fails (default high)
+      --fail-on <severity>  Exit 1 at or above this severity (default critical)
+                            critical = high-confidence match, high = also hard-coded
+                            passwords and tokens, medium = also high-entropy strings
       --changed-lines       Only report lines added in the staged diff
       --baseline <file>     Ignore findings recorded in this baseline
       --update-baseline     Write current findings to --baseline and exit 0
@@ -53,8 +55,7 @@ runCli(async () => {
   const format = values.format as OutputFormat;
   if (!OUTPUT_FORMATS.includes(format)) throw new Error(`--format must be one of ${OUTPUT_FORMATS.join(', ')}`);
   const config = loadConfig<SecretCheckConfig>(values.config, ['.secretcheckrc.json', '.secretcheckrc'])?.config ?? {};
-  const failOn = (values['fail-on'] ?? config.failOn ?? 'high') as Confidence;
-  if (!['high', 'medium', 'low'].includes(failOn)) throw new Error('--fail-on must be high, medium or low');
+  const failOn = parseSeverity(values['fail-on'] ?? config.failOn ?? 'critical');
 
   let result;
   if (command === 'staged') result = scanStaged({ config, changedLinesOnly: values['changed-lines'] });
@@ -75,9 +76,11 @@ runCli(async () => {
 
   const blocking = findings.filter((f) => isBlocking(f, failOn));
   if (blocking.length) {
-    console.error(`\n${TOOL}: blocked - ${blocking.length} secret(s) at or above "${failOn}" confidence.`);
+    console.error(`\n${TOOL}: blocked - ${blocking.length} secret(s) at or above "${failOn}" severity.`);
     console.error('Remove them from the commit, rotate the credentials, or allowlist reviewed false positives.');
     return 1;
   }
+  const below = findings.length - blocking.length;
+  if (below) console.error(`\n${TOOL}: ${below} finding(s) below the "${failOn}" threshold did not block. Lower --fail-on to block them.`);
   return 0;
 });

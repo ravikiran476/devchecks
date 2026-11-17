@@ -1,4 +1,5 @@
 import type { Severity } from '@devchecks/core';
+import { isHighEntropy } from './entropy.js';
 
 export type Confidence = 'high' | 'medium' | 'low';
 
@@ -8,6 +9,8 @@ export interface SecretRule {
   /** Must use the "g" flag. If it has a capture group named "secret", only that part is the secret. */
   pattern: RegExp;
   confidence: Confidence;
+  /** Glob patterns of the files the rule applies to. Default: every file. */
+  files?: readonly string[];
   /** Optional extra check on the matched secret (checksums, entropy, placeholder detection). */
   validate?: (secret: string, line: string) => boolean;
   remediation?: string;
@@ -31,6 +34,38 @@ export function isPathLike(value: string): boolean {
 
 export function isPlaceholder(value: string): boolean {
   return PLACEHOLDER.test(value.trim()) || /^(.)\1+$/.test(value) || /\b(?:process\.env|import\.meta\.env|os\.environ|getenv)\b/.test(value);
+}
+
+/** Files where `KEY=value` and `key: value` lines are configuration, not code. */
+export const CONFIG_FILES: readonly string[] = [
+  '.env',
+  '.env.*',
+  '*.env',
+  '*.properties',
+  '*.ini',
+  '*.cfg',
+  '*.conf',
+  '*.toml',
+  '*.yml',
+  '*.yaml',
+];
+
+const SENSITIVE_KEY = /password|passwd|pwd|secret|api[_-]?key|apikey|access[_-]?key|access[_-]?token|auth[_-]?token|client[_-]?secret|private[_-]?key|token/i;
+/** Keys such as secretName, tokenUrl or PASSWORD_MIN_LENGTH describe a secret; they do not hold one. */
+const DESCRIPTIVE_KEY = /(?:name|ref|file|path|dir|url|uri|endpoint|field|header|param|type|kind|length|len|min|max|size|expiry|expires|expiration|ttl|timeout|policy|id|label|prefix|suffix|enabled|required|algorithm|alg|version|hint|placeholder|rotation|count)$/i;
+
+/**
+ * True for an unquoted config value that looks like a real credential: it mixes letters and
+ * digits (or is random-looking) and is not a reference, path, URL, date or number.
+ */
+export function isConfigSecret(value: string, line: string): boolean {
+  const key = /^\s*(?:export\s+|-\s+)?["']?([\w.-]+)/.exec(line)?.[1] ?? '';
+  if (!SENSITIVE_KEY.test(key) || DESCRIPTIVE_KEY.test(key)) return false;
+  if (isPlaceholder(value) || isPathLike(value)) return false;
+  if (/\$\{|\$\(|\{\{|:\/\//.test(value) || /^[*&][A-Za-z_][\w-]*$/.test(value)) return false; // references, YAML aliases, URLs
+  if (/^[+-]?\d[\d.,:TZ+-]*[a-z]{0,3}$/i.test(value)) return false; // numbers, durations, dates
+  if (/^(?:true|false|yes|no|on|off|null|none)$/i.test(value)) return false;
+  return (/\d/.test(value) && /[A-Za-z]/.test(value)) || isHighEntropy(value);
 }
 
 export const BUILTIN_RULES: SecretRule[] = [
@@ -152,5 +187,14 @@ export const BUILTIN_RULES: SecretRule[] = [
     confidence: 'medium',
     // File paths and module names (e.g. a "secretcheck": "./dist/cli.js" bin entry) are not secrets.
     validate: (s) => !isPlaceholder(s) && !isPathLike(s),
+  },
+  {
+    id: 'config-secret-assignment',
+    description: 'Unquoted secret in a configuration file',
+    // .env, properties, INI, TOML and YAML values are usually unquoted, which the rule above cannot see.
+    files: CONFIG_FILES,
+    pattern: /^\s*(?:export\s+|-\s+)?["']?[\w.-]+["']?\s*[:=]\s*(?<secret>[^\s"'`#;]{8,})\s*(?:[#;].*)?$/g,
+    confidence: 'medium',
+    validate: isConfigSecret,
   },
 ];

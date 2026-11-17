@@ -49,7 +49,7 @@ const findings = await checkLockfile(lockfileText, { filename: 'package-lock.jso
 The OSV API allows CORS, so the CDN build works from a page:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/depcheck.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/depcheck.min.js" integrity="sha384-OchzRDwks7eMXEBI2GqXmZxUvsovWluRrSEK6i7VE8rRDidIPgy3Puh/6VGkX30N" crossorigin="anonymous"></script>
 <script>DepCheck.checkLockfile(text).then(console.table)</script>
 ```
 

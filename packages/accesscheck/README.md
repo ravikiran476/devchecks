@@ -6,10 +6,12 @@ Automated accessibility checks powered by [axe-core](https://github.com/dequelab
 
 ```bash
 npm i -D @devchecks/accesscheck playwright && npx playwright install chromium
-npx accesscheck http://localhost:3000 /checkout /account --fail-on high
-npx accesscheck --update-baseline --baseline a11y-baseline.json   # accept today's issues
-npx accesscheck --baseline a11y-baseline.json                     # fail only on new ones
+npx @devchecks/accesscheck http://localhost:3000 /checkout /account --fail-on high
+npx @devchecks/accesscheck --update-baseline --baseline a11y-baseline.json   # accept today's issues
+npx @devchecks/accesscheck --baseline a11y-baseline.json                     # fail only on new ones
 ```
+
+Exit codes: `0` ok, `1` issues at or above `--fail-on`, `2` an error, including any page that could not be loaded or scanned. Pages with a strict Content-Security-Policy are scanned too.
 
 `accesscheck.config.json`:
 
@@ -29,7 +31,7 @@ Severity follows axe impact: critical → `critical`, serious → `high`, modera
 ## Browser / CDN
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/accesscheck.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/accesscheck.min.js" integrity="sha384-JlDlnfau0L7U2RAemvsKXmzgjZ78q0Qb6bZ0gNiI43Wm9IwqdQS2Sph++b977hUz" crossorigin="anonymous"></script>
 <script>
   AccessCheck.scan(document, { exclude: ['#ads'] }).then(({ findings }) => console.table(findings));
   // or AccessCheck.audit() to print a table

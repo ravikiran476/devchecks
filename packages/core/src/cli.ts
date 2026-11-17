@@ -19,9 +19,9 @@ Options:
   -h, --help              Show help
 
 Example:
-  npx secretcheck -f json -o reports/secrets.json
+  npx @devchecks/secretcheck -f json -o reports/secrets.json
   npx @devchecks/depcheck -f json -o reports/deps.json
-  npx devchecks merge reports/*.json -f markdown -o report.md --fail-on high`;
+  npx @devchecks/core merge reports/*.json -f markdown -o report.md --fail-on high`;
 
 runCli(async () => {
   const { values, positionals } = parseArgs({

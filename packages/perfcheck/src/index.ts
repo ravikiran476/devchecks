@@ -1,6 +1,6 @@
 // Browser entry: measure the current page and check budgets.
 //
-//   <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/perfcheck.min.js"></script>
+//   <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/perfcheck.min.js"></script>
 //   <script>PerfCheck.measure({ budgets: { lcp: 2500, scriptBytes: '300kB' } }).then((r) => console.table(r.vitals))</script>
 //
 // Load it early (in <head>) so it sees every layout shift and interaction.

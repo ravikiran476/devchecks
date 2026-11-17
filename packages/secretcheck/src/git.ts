@@ -46,14 +46,42 @@ export function readStagedBlobs(root: string, paths: string[]): Map<string, Buff
   return result;
 }
 
+/** Undoes Git's C-style quoting of unusual paths ("b/tab\there.js"). */
+function unquotePath(path: string): string {
+  if (!path.startsWith('"') || !path.endsWith('"')) return path;
+  const bytes: number[] = [];
+  const body = path.slice(1, -1);
+  const simple: Record<string, number> = { n: 10, t: 9, r: 13, a: 7, b: 8, f: 12, v: 11, '"': 34, '\\': 92 };
+  for (let i = 0; i < body.length; i++) {
+    if (body[i] !== '\\') {
+      bytes.push(...Buffer.from(body[i]!, 'utf8'));
+      continue;
+    }
+    const octal = /^[0-7]{3}/.exec(body.slice(i + 1));
+    if (octal) {
+      bytes.push(parseInt(octal[0], 8));
+      i += 3;
+    } else {
+      bytes.push(simple[body[i + 1]!] ?? body.charCodeAt(i + 1));
+      i++;
+    }
+  }
+  return Buffer.from(bytes).toString('utf8');
+}
+
 /** Line numbers added or changed in the staged diff, per path. */
 export function stagedAddedLines(root: string): Map<string, Set<number>> {
-  const diff = git(['diff', '--cached', '-U0', '--no-color', '--no-ext-diff', '--diff-filter=ACMR'], root).toString('utf8');
+  // The prefixes are set explicitly: diff.noprefix and diff.mnemonicPrefix in a user's Git
+  // config change them, and a path that fails to match would mean its lines are never scanned.
+  const diff = git(
+    ['diff', '--cached', '-U0', '--no-color', '--no-ext-diff', '--src-prefix=a/', '--dst-prefix=b/', '--diff-filter=ACMR'],
+    root,
+  ).toString('utf8');
   const result = new Map<string, Set<number>>();
   let current: Set<number> | undefined;
   for (const line of diff.split('\n')) {
     if (line.startsWith('+++ ')) {
-      const path = line.slice(4).replace(/^b\//, '').replace(/\t$/, '');
+      const path = unquotePath(line.slice(4).replace(/\t$/, '')).replace(/^b\//, '');
       current = path === '/dev/null' ? undefined : new Set();
       if (current) result.set(path, current);
       continue;

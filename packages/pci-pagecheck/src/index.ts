@@ -1,6 +1,6 @@
 // Browser-safe entry. From a CDN on (a staging copy of) your payment page:
 //
-//   <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/pci-pagecheck.min.js"></script>
+//   <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/pci-pagecheck.min.js"></script>
 //   <script>PCIPageCheck.check({ baseline }).then((r) => console.table(r.inventory))</script>
 import { createReport, type BaselineDiff, type Finding, type Report } from '@devchecks/core';
 import { analyzePage, buildSnapshot, type AnalysisResult, type AnalyzeOptions } from './analyze.js';
@@ -9,7 +9,7 @@ import { collectDom, type PageSnapshot } from './snapshot.js';
 
 export * from './analyze.js';
 export { analyzeCsp, parseCsp, type CspIssue } from './csp.js';
-export { luhn, scanSourceForCardData } from './carddata.js';
+export { luhn, maskPans, scanSourceForCardData } from './carddata.js';
 export { CONTROLS, DISCLAIMER, type Control } from './controls.js';
 export { collectDom, type CardField, type FrameEntry, type PageSnapshot, type RawDom, type ScriptEntry } from './snapshot.js';
 export { createBaseline, diffBaseline, formatReport, type Finding, type Report } from '@devchecks/core';

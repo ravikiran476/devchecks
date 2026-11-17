@@ -1,6 +1,6 @@
 // Browser entry: bundles axe-core and scans the current document (or part of it).
 //
-//   <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/accesscheck.min.js"></script>
+//   <script src="https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/accesscheck.min.js"></script>
 //   <script>AccessCheck.scan().then((r) => console.table(r.findings))</script>
 import axe from 'axe-core';
 import { diffBaseline, type Baseline, type Finding, type Report } from '@devchecks/core';

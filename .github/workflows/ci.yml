@@ -16,12 +16,19 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      # Chromium for the Playwright-based tests (they are skipped without it).
+      - run: npx playwright install --with-deps chromium
       - run: npm test
       - run: npm run cdn
-      - name: cdn/ must match the source
+      - name: cdn/ and the docs' integrity hashes must match the source
         run: |
-          if ! git diff --quiet -- cdn; then
-            echo "cdn/ is out of date. Run 'npm run cdn' and commit the result." >&2
-            git diff --stat -- cdn
+          if ! git diff --quiet; then
+            echo "cdn/ or the docs are out of date. Run 'npm run cdn' and commit the result." >&2
+            git diff --stat
             exit 1
           fi
+      # The repository checks itself with its own tools.
+      - name: secretcheck (whole repository)
+        run: node packages/secretcheck/dist/cli.js scan . --fail-on high
+      - name: depcheck (production dependencies)
+        run: node packages/depcheck/dist/cli.js --production --fail-on high

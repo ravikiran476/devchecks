@@ -46,6 +46,6 @@ import { analyzeSource } from '@devchecks/safecodecheck';
 const { findings } = analyzeSource(code, 'src/App.tsx');
 ```
 
-`https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.1.0/cdn/safecodecheck.min.js` → `SafeCodeCheck.analyzeSource(code, 'a.tsx')` (about 87 kB gzip, including the parser).
+`https://cdn.jsdelivr.net/gh/ravikiran476/devchecks@v0.2.0/cdn/safecodecheck.min.js` → `SafeCodeCheck.analyzeSource(code, 'a.tsx')` (about 87 kB gzip, including the parser).
 
 Static analysis finds likely issues, not proof of exploitability. Data flow is tracked within an expression, not across functions.

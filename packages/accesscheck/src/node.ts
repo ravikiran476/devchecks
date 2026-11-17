@@ -38,7 +38,7 @@ export interface NodeScanOptions {
 interface PwPage {
   goto(url: string, o: { waitUntil: string; timeout: number }): Promise<{ status(): number } | null>;
   waitForSelector(s: string, o: { timeout: number }): Promise<unknown>;
-  addScriptTag(o: { content: string }): Promise<unknown>;
+  evaluate(expression: string): Promise<unknown>;
   evaluate<T, A>(fn: (arg: A) => Promise<T> | T, arg: A): Promise<T>;
   url(): string;
   close(): Promise<void>;
@@ -86,7 +86,9 @@ export async function scanUrls(targets: Array<string | PageTarget>, options: Nod
         const res = await page.goto(url, { waitUntil: options.waitUntil ?? 'load', timeout: options.timeoutMs ?? 30000 });
         if (target.waitFor) await page.waitForSelector(target.waitFor, { timeout: options.timeoutMs ?? 30000 });
         if (target.setup) await target.setup(page);
-        await page.addScriptTag({ content: source });
+        // Evaluated, not added as a <script> tag: a page whose Content-Security-Policy forbids
+        // inline scripts would block the tag, and the page could then not be scanned at all.
+        await page.evaluate(source);
         const results = await page.evaluate(
           async (o: { tags: string[]; disable: string[]; exclude: string[] }) => {
             const axe = (window as unknown as { axe: { run(c: unknown, o: unknown): Promise<unknown> } }).axe;
